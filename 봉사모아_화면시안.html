@@ -1,0 +1,2759 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>봉사모아 화면 시안</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --pri:#17945F; --pri-d:#0F6E46; --pri-bg:#E8F5EF; --pri-bg2:#D4EDE1;
+  --tx:#16171A; --tx2:#63666E; --mu:#9A9DA5;
+  --bd:#EDEDEA; --bd2:#DEDEDA; --ln:#F4F4F1;
+  --card:#FFFFFF; --page:#F7F7F4;
+  --ok:#0F6E46; --ok-bg:#E8F5EF;
+  --wn:#8A5A05; --wn-bg:#FBF1DE;
+  --dg:#B02318; --dg-bg:#FCECEA;
+  --r-c:16px; --r-b:14px; --r-i:12px;
+}
+html,body{height:100%}
+body{
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:#DCDCD7; color:var(--tx); font-size:15px; line-height:1.55;
+  display:flex; justify-content:center;
+  -webkit-font-smoothing:antialiased; letter-spacing:-.014em;
+}
+.ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:-.14em;flex-shrink:0}
+.phone{width:100%;max-width:430px;height:100dvh;background:var(--page);display:flex;flex-direction:column;overflow:hidden;position:relative}
+.scr{display:none;flex:1;flex-direction:column;overflow:hidden;position:relative}
+.scr.on{display:flex}
+/* ⚠ 화면은 세로 flex 입니다. 자식에 flex 를 안 적어두면 기본값이 «줄어들어도 됨»(shrink:1)
+   이라서, 내용이 화면보다 길면 헤더 아래 검색창·칩·탭이 세로로 찌그러집니다.
+   실제로 봉사 찾기에서 검색창과 분야 칩이 눌려 잘려 보였습니다.
+   → 스크롤 영역(.body)만 늘고 줄고, 나머지는 전부 제 높이를 지키게 못 박습니다. */
+.scr.on > *{flex-shrink:0}
+.scr.on > .body{flex:1 1 auto;min-height:0}
+.body{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:32px}
+
+/* 헤더 */
+.hd{flex:0 0 auto;box-sizing:border-box;min-height:68px;background:var(--card);padding:14px 20px;display:flex;align-items:center;gap:13px;border-bottom:1px solid var(--bd)}
+.hd.plain{border-bottom:none}
+.hd .ic{font-size:23px;cursor:pointer;margin:-4px}
+.hd h1{font-size:17.5px;font-weight:600;flex:1;min-width:0;line-height:1.25;letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hd .sub{font-size:12.5px;color:var(--tx2);font-weight:400;display:block;margin-top:2px;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hd .act{font-size:15px;color:var(--pri);cursor:pointer;font-weight:600;white-space:nowrap}
+/* 탭 루트 헤더 — 큰 제목, 뒤로가기 없음 */
+.hd.root{padding:16px 20px 12px;border-bottom:none;align-items:center}
+.hd.root h1{font-size:26px;font-weight:700;letter-spacing:-.035em;line-height:1.2;display:flex;align-items:center;gap:8px;white-space:normal;overflow:visible}
+.hd.root .act{font-size:13.5px;color:var(--tx2);font-weight:500;margin-top:6px}
+.loginbtn{font-size:14px;font-weight:700;color:var(--pri);background:var(--pri-bg);padding:8px 15px;border-radius:99px;cursor:pointer;white-space:nowrap;margin-top:2px}
+#favbtn{transition:transform .14s ease}
+.sharegrid{display:flex;gap:10px;justify-content:center;padding:4px 0 2px}
+.sharegrid>div{flex:1;text-align:center;cursor:pointer}
+.sharegrid .sb{width:54px;height:54px;border-radius:17px;background:var(--page);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;color:var(--tx)}
+.sharegrid .sb .ic{font-size:23px}
+.sharegrid span{font-size:12.5px;color:var(--tx2)}
+.rsub{background:var(--card);padding:0 20px 15px;font-size:13.5px;color:var(--tx2)}
+
+/* 하위 화면 하단 고정 액션바 — 탭 자리를 대신함 */
+.cta{flex:0 0 auto;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--bd);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+.cta .hint{margin-top:9px;text-align:center}
+
+/* 하단 탭 */
+.nav{flex:0 0 auto;display:flex;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom)}
+.nav div{flex:1;min-width:0;text-align:center;padding:9px 0 10px;cursor:pointer;color:var(--mu)}
+.nav div.on{color:var(--pri)}
+.nav .ic{font-size:23px;display:block;margin:0 auto}
+.nav span{font-size:11px;display:block;margin-top:3px;font-weight:500}
+.nav .wrapi{position:relative;display:inline-block}
+.nav .dot{position:absolute;top:-2px;right:-7px;min-width:17px;height:17px;border-radius:99px;background:var(--dg);color:#fff;font-size:11px;font-weight:700;line-height:17px;text-align:center;padding:0 4px}
+
+/* 섹션 */
+.sec{padding:26px 20px 10px;font-size:16px;font-weight:600;letter-spacing:-.02em;display:flex;align-items:center;gap:7px}
+.sec .more{margin-left:auto;color:var(--tx2);font-weight:500;font-size:13.5px;cursor:pointer}
+.sub2{padding:0 20px 8px;font-size:13px;color:var(--tx2);line-height:1.6;margin-top:-4px}
+.foot{padding:16px 20px 0;font-size:12.5px;color:var(--mu);line-height:1.65}
+/* 소수만 찾는 링크. 있는 줄 아는 사람만 보이면 됩니다. */
+.quiet{text-align:center;padding:30px 20px 10px;font-size:12.5px;color:var(--mu);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+/* 시안 확인용 · 실제 서비스에는 들어가지 않는 것. 점선으로 구분해 지울 것을 표시합니다. */
+.devnote{margin:18px 16px 0;padding:10px 13px;border:1px dashed var(--bd2);border-radius:10px;font-size:12px;color:var(--mu);line-height:1.6}
+.devnote b{color:var(--tx2);font-weight:600}
+.devnote a{color:var(--ok);font-weight:600;cursor:pointer;text-decoration:underline}
+.quiet:active{color:var(--tx2)}
+
+/* 카드 · 리스트 */
+.group{background:var(--card);border-radius:var(--r-c);margin:0 16px;overflow:hidden;border:1px solid var(--bd)}
+.box{background:var(--card);margin:0 16px;border:1px solid var(--bd);border-radius:var(--r-c);padding:18px}
+.row{display:flex;align-items:center;gap:13px;padding:15px 17px;border-bottom:1px solid var(--ln);cursor:pointer;min-height:60px}
+.row:last-child{border-bottom:none}
+.row .g{flex:1;min-width:0}
+.row .t{font-size:15.5px;font-weight:500;letter-spacing:-.015em}
+.row .s{font-size:13px;color:var(--tx2);margin-top:3px}
+.nick{font-size:13px;color:var(--mu);font-weight:400;letter-spacing:-.01em}
+.row .ch{font-size:19px;color:#C9C9C4}
+.row.off{opacity:.42;cursor:not-allowed}
+.thumb{width:42px;height:42px;border-radius:12px;background:var(--pri-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--pri)}
+.thumb .ic{font-size:21px}
+.badge{font-size:12px;padding:4px 10px;border-radius:8px;white-space:nowrap;font-weight:600;letter-spacing:-.01em}
+.b-ok{background:var(--ok-bg);color:var(--ok)}
+.b-off{background:#F1F1EE;color:var(--tx2)}
+.b-wn{background:var(--wn-bg);color:var(--wn)}
+.b-dg{background:var(--dg-bg);color:var(--dg)}
+
+/* 버튼 */
+.btn{display:block;width:100%;padding:15px;border-radius:var(--r-b);border:none;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;text-align:center;letter-spacing:-.02em}
+.btn-p{background:var(--pri);color:#fff}
+.btn-o{background:var(--card);color:var(--tx);border:1px solid var(--bd2)}
+.btn-d{background:var(--card);color:var(--dg);border:1px solid var(--bd2)}
+.btn:disabled{background:#EBEBE7;color:var(--mu);cursor:not-allowed}
+.sso-k{background:#FEE500;color:#191600;display:flex;align-items:center;justify-content:center;gap:9px}
+.sso-k .ic,.sso-n .ic{font-size:20px}
+.two{display:flex;gap:10px}
+.two>*{flex:1;min-width:0}
+
+/* 입력 */
+.field{padding:0 20px;margin-bottom:22px}
+.field label{display:block;font-size:14px;font-weight:600;margin-bottom:9px;letter-spacing:-.015em}
+.field label em{color:var(--dg);font-style:normal;margin-left:3px}
+input,textarea,select{width:100%;padding:14px;border:1px solid var(--bd2);border-radius:var(--r-i);font-size:15.5px;font-family:inherit;background:var(--card);color:var(--tx)}
+textarea{min-height:120px;resize:vertical;line-height:1.7}
+input::placeholder,textarea::placeholder{color:var(--mu)}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--pri);box-shadow:0 0 0 3px var(--pri-bg)}
+.hint{font-size:12.5px;color:var(--mu);margin-top:8px;line-height:1.6}
+/* 입력칸 + 버튼 한 줄 (인증번호 받기·확인) */
+.inrow{display:flex;gap:8px}
+.inrow input{flex:1;min-width:0}
+.inbtn{flex:0 0 auto;padding:0 15px;border-radius:var(--r-i);border:1px solid var(--pri);background:var(--pri-bg);color:var(--pri-d);font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap}
+.inbtn:active{background:var(--pri-bg2)}
+
+/* 요일 */
+.days{display:flex;gap:6px}
+.day{flex:1;text-align:center;padding:13px 0;border:1px solid var(--bd2);border-radius:11px;font-size:14.5px;cursor:pointer;background:var(--card);user-select:none}
+.day.on{background:var(--pri);color:#fff;border-color:var(--pri);font-weight:600}
+
+/* 통계 */
+.stat{display:flex;gap:10px;padding:0 16px}
+.stat div{flex:1;min-width:0;background:var(--card);border:1px solid var(--bd);border-radius:var(--r-c);padding:15px}
+.stat .n{font-size:23px;font-weight:700;line-height:1.15;letter-spacing:-.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat .l{font-size:12px;color:var(--tx2);margin-top:3px}
+.av{width:40px;height:40px;border-radius:50%;background:var(--pri-bg);color:var(--pri);display:flex;align-items:center;justify-content:center;font-size:14.5px;font-weight:600;flex-shrink:0}
+.avs{width:30px;height:30px;border-radius:50%;background:var(--pri-bg);color:var(--pri);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+
+/* 세그먼트 */
+.seg{display:flex;gap:4px;margin:14px 16px 0;background:#EDEDE9;padding:4px;border-radius:12px}
+.seg div{flex:1;min-width:0;text-align:center;padding:9px 0;font-size:14px;color:var(--tx2);cursor:pointer;border-radius:9px;font-weight:500}
+.seg div.on{background:var(--card);color:var(--tx);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* 히어로 */
+.hero{height:190px;background:var(--pri-bg);display:flex;align-items:center;justify-content:center;position:relative;color:var(--pri)}
+.hero .ic{font-size:66px;opacity:.42}
+.hero .ph{position:absolute;bottom:10px;right:12px;background:rgba(0,0,0,.38);color:#fff;font-size:11px;padding:4px 9px;border-radius:7px}
+.htitle{padding:20px 20px 0;background:var(--card)}
+.htitle h2{font-size:23px;font-weight:700;line-height:1.25;letter-spacing:-.033em}
+.htitle .m{font-size:13.5px;color:var(--tx2);margin-top:6px}
+.hbtn{display:flex;gap:9px;padding:16px 20px 20px;background:var(--card)}
+.hbtn button{flex:1;min-width:0;padding:13px;border-radius:12px;border:1px solid var(--bd2);background:var(--card);font-size:14px;font-family:inherit;cursor:pointer;color:var(--tx);display:flex;align-items:center;justify-content:center;gap:6px;font-weight:600}
+.hbtn button .ic{font-size:17px;color:var(--pri)}
+
+/* 알림 배너 */
+.ban{margin:16px;background:var(--wn-bg);border-radius:var(--r-c);padding:15px 16px}
+.ban .l{font-size:12px;color:var(--wn);font-weight:700;margin-bottom:4px}
+.ban .c{font-size:14px;color:var(--wn);line-height:1.6}
+.ban.g{background:var(--pri-bg)}
+.ban.g .l,.ban.g .c{color:var(--ok)}
+
+/* 가기 전에 확인할 것 */
+.conds{display:flex;flex-wrap:wrap;gap:7px;padding:0 20px}
+.cond{font-size:13px;padding:7px 12px;border-radius:10px;background:var(--card);border:1px solid var(--bd);color:var(--tx2);display:flex;align-items:center;gap:5px}
+.cond .ic{font-size:15px}
+.cond.imp{background:var(--dg-bg);border-color:transparent;color:var(--dg);font-weight:600}
+.pick{display:flex;gap:8px;padding:0 20px;flex-wrap:wrap}
+.pick div{padding:11px 15px;border:1px solid var(--bd2);border-radius:11px;font-size:14.5px;cursor:pointer;background:var(--card);user-select:none}
+.pick div.on{background:var(--pri);color:#fff;border-color:var(--pri);font-weight:600}
+.pick.wide div{flex:1;text-align:center;white-space:nowrap}
+.tog{display:flex;flex-wrap:wrap;gap:8px;padding:0 20px}
+.tog div{padding:11px 14px;border:1px solid var(--bd2);border-radius:11px;font-size:14px;cursor:pointer;background:var(--card);user-select:none;display:flex;align-items:center;gap:6px;color:var(--tx2)}
+.tog div .ic{font-size:16px;color:var(--mu)}
+.tog div.on{background:var(--pri-bg);border-color:var(--pri);color:var(--ok);font-weight:600}
+.tog div.on .ic{color:var(--pri)}
+
+/* 달력 */
+.cal{background:var(--card);border-radius:var(--r-c);margin:0 16px;padding:16px 14px 12px;border:1px solid var(--bd)}
+.calhd{display:flex;align-items:center;justify-content:center;gap:22px;padding:0 4px 16px}
+.calhd .m{font-size:16.5px;font-weight:600;letter-spacing:-.02em;min-width:96px;text-align:center}
+.calhd .ic{font-size:20px;color:var(--tx2);cursor:pointer}
+.calhd .ic.dis{color:#DCDCD7;cursor:default}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cw{text-align:center;font-size:12px;color:var(--mu);padding-bottom:8px;font-weight:500}
+.cd{aspect-ratio:1/1.06;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;font-size:14.5px;color:#C6C6C1;position:relative}
+.cd.pastday{color:#D2D2CD}
+.cd.open{background:var(--pri-bg);color:var(--ok);font-weight:700;cursor:pointer}
+.cd.open:active{background:var(--pri-bg2)}
+.cd.full{background:#F1F1EE;color:var(--mu);font-weight:500}
+.cd.closed{background:#F1F1EE;color:var(--mu);font-weight:500}
+.cd small{font-size:11px;font-weight:600;margin-top:2px;letter-spacing:-.02em}
+.cd.today:after{content:"";position:absolute;bottom:5px;width:4px;height:4px;border-radius:50%;background:var(--tx)}
+.leg{display:flex;gap:13px;justify-content:center;padding:14px 0 2px;flex-wrap:wrap}
+.leg span{font-size:12px;color:var(--tx2);display:flex;align-items:center;gap:5px}
+.leg i{width:11px;height:11px;border-radius:4px;display:inline-block}
+.cd .av{width:5px;height:5px;min-width:5px;border-radius:50%;background:var(--pri);margin-top:4px;padding:0}
+.soon{margin:0 16px 12px;background:var(--card);border:1px solid var(--pri);border-radius:var(--r-c);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.soon .l{font-size:11.5px;color:var(--pri);font-weight:700}
+.soon .d{font-size:15.5px;font-weight:600;margin-top:3px;letter-spacing:-.02em}
+.soon .b{margin-left:auto;background:var(--pri);color:#fff;border:none;padding:10px 16px;border-radius:11px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap}
+
+/* 후기 */
+.rvcard{display:flex;gap:13px;padding:16px 17px;border-bottom:1px solid var(--ln);cursor:pointer}
+.rvcard:last-child{border-bottom:none}
+.rvimg{width:76px;height:76px;border-radius:12px;flex-shrink:0;background:var(--pri-bg);display:flex;align-items:center;justify-content:center;color:var(--pri);position:relative}
+.rvimg .ic{font-size:28px;opacity:.5}
+.rvimg .n{position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.5);color:#fff;font-size:11px;padding:1px 6px;border-radius:6px}
+.rvc{flex:1;min-width:0}
+.rvc .tt{font-size:15px;font-weight:600;letter-spacing:-.015em;line-height:1.4;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.rvc .ex{font-size:13.5px;color:var(--tx2);margin-top:4px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rvc .mt{font-size:12px;color:var(--mu);margin-top:7px;display:flex;align-items:center;gap:6px}
+.rvhero{height:230px;background:var(--pri-bg);display:flex;align-items:center;justify-content:center;color:var(--pri)}
+.rvhero .ic{font-size:60px;opacity:.42}
+.rvbody{padding:20px;font-size:15.5px;line-height:1.85;color:var(--tx);white-space:pre-line}
+.rvmeta{display:flex;align-items:center;gap:11px;padding:18px 20px 0}
+.rvmeta .nm{font-size:14.5px;font-weight:600}
+.rvmeta .dt{font-size:12.5px;color:var(--mu);margin-top:1px}
+
+/* 참석 확인 */
+.att{margin:16px;background:var(--pri-bg);border-radius:var(--r-c);padding:18px}
+.att .h{font-size:16px;font-weight:700;color:var(--ok);margin-bottom:5px;letter-spacing:-.02em}
+.att .d{font-size:13.5px;color:var(--ok);line-height:1.65;opacity:.92}
+.att button{margin-top:14px}
+.att.urg{background:var(--wn-bg)}
+.att.urg .h,.att.urg .d{color:var(--wn)}
+.att .dday{display:inline-block;background:var(--dg);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px;margin-bottom:9px}
+.segdot{display:inline-block;min-width:16px;height:16px;line-height:16px;border-radius:99px;background:var(--dg);color:#fff;font-size:11px;font-weight:700;padding:0 4px;margin-left:3px;vertical-align:1px}
+.mini{padding:8px 14px;border-radius:10px;border:none;background:var(--pri);color:#fff;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap}
+
+/* 다음 봉사 카드 */
+.next{margin:16px;background:var(--pri);border-radius:20px;padding:20px;color:#fff}
+.next .l{font-size:12.5px;opacity:.82;font-weight:600;letter-spacing:.02em}
+.next .d{font-size:24px;font-weight:700;margin-top:7px;letter-spacing:-.03em}
+.next .t{font-size:14px;opacity:.9;margin-top:5px}
+.next .c{display:flex;align-items:center;gap:8px;margin-top:16px;padding-top:15px;border-top:1px solid rgba(255,255,255,.22)}
+.next .c b{font-size:19px;font-weight:700}
+.next .c span{font-size:13px;opacity:.88}
+.next button{margin-left:auto;background:#fff;color:var(--pri-d);border:none;padding:10px 17px;border-radius:11px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
+
+/* 목록 안 추가 행 */
+.addrow{display:flex;align-items:center;justify-content:center;gap:7px;padding:16px;border-top:1px dashed var(--bd2);color:var(--pri);font-size:15px;font-weight:600;cursor:pointer;background:var(--card)}
+.addrow:active{background:var(--pri-bg)}
+.addrow .ic{font-size:19px;stroke-width:2.2}
+
+/* 랜딩 */
+/* 로고 — 크기는 --lg 하나만 바꾸면 전부 따라옵니다 */
+.logo{--lg:74px;width:var(--lg);height:var(--lg);border-radius:calc(var(--lg)*.3);background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;flex-shrink:0}
+.logo .ic{width:.62em;height:.62em;font-size:var(--lg);stroke:none;margin:0;cursor:inherit}
+.logo.sm{--lg:30px;border-radius:9px;margin:0}
+.spin{width:26px;height:26px;border-radius:50%;border:2.5px solid var(--bd2);border-top-color:var(--pri);margin-top:30px;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* 준비물 카드 */
+/* 준비물 — 한 줄로 줄였습니다. 아이콘·제목·내용이 한 줄에 들어가
+   목록 흐름을 끊지 않으면서도 노란색이라 눈에는 띕니다. */
+.bring{margin:0 16px;background:#FFF9EC;border:1px solid #F2E4C4;border-radius:var(--r-b);padding:11px 14px;display:flex;gap:10px;align-items:center}
+.bring .ib{color:#8A5A05;display:flex;align-items:center;flex-shrink:0}
+.bring .ib .ic{font-size:18px}
+.bring .l{font-size:12px;color:#8A5A05;font-weight:700;flex-shrink:0}
+.bring .v{font-size:14px;font-weight:600;color:#5C3D04;line-height:1.45;letter-spacing:-.02em;min-width:0}
+.bring .n{display:none}
+
+/* 안전 안내 — 차분한 회청색. 겁주지 않으면서 눈에는 남게 */
+.safe{margin:0 16px;background:#F2F5F8;border:1px solid #DCE4EC;border-radius:var(--r-b);padding:14px 15px;display:flex;gap:11px;align-items:flex-start}
+.safe .ib{color:#4A6785;flex-shrink:0;display:flex;align-items:center}
+.safe .ib .ic{font-size:19px}
+.safe .l{font-size:12.5px;font-weight:700;color:#3B5570;margin-bottom:5px}
+.safe .v{font-size:13.5px;color:#3B5570;line-height:1.7;letter-spacing:-.01em}
+.safe.ok{background:var(--pri-bg);border-color:#BFE0D0}
+.safe.ok .ib,.safe.ok .l,.safe.ok .v{color:var(--ok)}
+.insb{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:4px 9px;border-radius:8px;background:#EEF2F6;color:#4A6785}
+.insb.ok{background:var(--pri-bg);color:var(--ok)}
+
+/* 검색 · 필터 */
+.srch{padding:4px 20px 12px;background:var(--card)}
+.srch .in{position:relative;display:flex;align-items:center}
+.srch .in .ic{position:absolute;left:14px;color:var(--mu);font-size:20px}
+.srch input{padding-left:43px;border-radius:13px;background:var(--page);border-color:transparent;font-size:15px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:0 20px 14px;background:var(--card);scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;padding:8px 14px;border:1px solid var(--bd2);border-radius:99px;font-size:14px;color:var(--tx2);cursor:pointer;background:var(--card);user-select:none}
+.chip.on{background:var(--tx);color:#fff;border-color:var(--tx);font-weight:600}
+/* 지역 선택 — 헤더 안. 지역은 «필터»가 아니라 «지금 보고 있는 곳»이라
+   버튼 하나로 접어두지 않고 제목 옆에 항상 보이게 둡니다. (당근·번개장터 패턴) */
+
+
+/* 센터 목록 카드 */
+.crow{display:flex;gap:14px;padding:14px 17px;border-bottom:1px solid var(--ln);cursor:pointer;align-items:center}
+.crow:last-child{border-bottom:none}
+.tl{width:84px;height:84px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--pri-bg);color:var(--pri);position:relative;overflow:hidden}
+.tl .ic{font-size:38px;opacity:.55}
+.tl .ph{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.32);color:#fff;font-size:11px;text-align:center;padding:3px 0}
+/* height 고정이 아니라 min-height. 줄이 하나 늘어나면 글자가 잘려 보였습니다. */
+.cinfo{flex:1;min-width:0;min-height:84px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.cinfo .nm{font-size:16.5px;font-weight:600;line-height:1.35;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cinfo .mt{font-size:13px;line-height:1.45;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 카드의 «가장 빨리 갈 수 있는 날» 배지.
+   ⚠ 예전엔 이 클래스 이름이 .soon 이었는데, 센터 상세의 «가장 빠른 봉사» 카드와
+   이름이 겹쳐 레이아웃이 깨졌습니다. .nxt 로 분리했습니다. */
+.nxt{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;line-height:1.35;font-weight:700;color:var(--ok);background:var(--pri-bg);padding:4px 9px;border-radius:8px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nxt.none{color:var(--mu);background:var(--page);font-weight:600}
+
+/* 프로필 사진 */
+.pfp{border-radius:50%;background:var(--pri-bg);color:var(--pri);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;font-weight:700;letter-spacing:-.02em}
+.pfp .ic{font-size:.55em;opacity:.6}
+.pfp.s24{width:24px;height:24px;font-size:11px}
+.pfp.s32{width:32px;height:32px;font-size:12.5px}
+.pfp.s38{width:38px;height:38px;font-size:14px}
+.pfp.s44{width:44px;height:44px;font-size:16px}
+.pfp.s76{width:76px;height:76px;font-size:26px}
+.hdpfp{cursor:pointer;margin-top:2px;border:1.5px solid var(--bd2)}
+.authonly{display:none}
+.pfpedit{position:relative;cursor:pointer}
+.pfpedit .cam{position:absolute;right:-2px;bottom:-2px;width:26px;height:26px;border-radius:50%;background:var(--card);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;color:var(--tx2)}
+.pfpedit .cam .ic{font-size:14px}
+
+/* 필터 버튼 하나 */
+.fone{display:flex;align-items:center;gap:8px;padding:14px 18px 12px}
+.fbtn2{display:inline-flex;align-items:center;gap:6px;padding:9px 15px;border:1px solid var(--bd2);border-radius:99px;font-size:14px;font-weight:600;background:var(--card);cursor:pointer;color:var(--tx);white-space:nowrap}
+.fbtn2 .ic{font-size:17px;color:var(--tx2)}
+.fbtn2.on{background:var(--tx);border-color:var(--tx);color:#fff}
+.fbtn2.on .ic{color:#fff}
+.fbtn2 .cnt{background:var(--pri);color:#fff;font-size:11.5px;min-width:18px;height:18px;border-radius:99px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.fone .n{font-size:13.5px;color:var(--tx2);margin-left:auto}
+
+/* 필터 시트 안쪽 */
+.fsec{font-size:14px;font-weight:700;margin:22px 0 10px;letter-spacing:-.02em}
+.fsec:first-of-type{margin-top:4px}
+.fwrap{display:flex;flex-wrap:wrap;gap:7px}
+.fpill{padding:9px 14px;border:1px solid var(--bd2);border-radius:99px;font-size:14px;color:var(--tx2);cursor:pointer;background:var(--card);user-select:none}
+.fpill.on{background:var(--pri-bg);border-color:var(--pri);color:var(--ok);font-weight:700}
+
+
+/* 시트 · 모달 */
+.dim{position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;z-index:50}
+.sheet{background:var(--card);width:100%;border-radius:24px 24px 0 0;padding:10px 20px calc(22px + env(safe-area-inset-bottom));max-height:88%;overflow-y:auto}
+.grip{width:38px;height:4px;border-radius:99px;background:#DDDDD8;margin:0 auto 16px}
+.sheet h3{font-size:19px;font-weight:700;margin-bottom:16px;letter-spacing:-.025em}
+.kv{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid var(--ln);font-size:14.5px}
+.kv span:first-child{color:var(--tx2);white-space:nowrap}
+.kv span:last-child{font-weight:600;text-align:right}
+.copybtn{display:inline-flex;align-items:center;gap:4px;margin-left:8px;padding:4px 9px;border-radius:8px;background:var(--pri-bg);color:var(--pri-d);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;vertical-align:1px}
+.copybtn .ic{font-size:13px}
+.copybtn.done{background:var(--pri);color:#fff}
+/* 확인 체크 한 줄. 원래 .cline / .condlist 에 CSS가 아예 없어서
+   체크박스가 글자 위에 얹히고, 눌러도 초록으로 변하지 않았습니다. */
+.cline{display:flex;align-items:flex-start;gap:11px;padding:15px 17px;margin:0 16px;background:var(--card);border:1.5px solid var(--bd2);border-radius:var(--r-c);cursor:pointer;transition:border-color .12s,background .12s}
+.cline.on{border-color:var(--pri);background:var(--pri-bg)}
+.cline.on .cbox{background:var(--pri);border-color:var(--pri);color:#fff}
+.cline .cl{font-size:14.5px;line-height:1.5;letter-spacing:-.015em}
+.agree{display:flex;align-items:flex-start;gap:11px;padding:15px 0 3px;margin-top:12px;border-top:1px solid var(--ln);cursor:pointer}
+.cbox{width:23px;height:23px;border-radius:7px;border:1.8px solid var(--bd2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;color:transparent}
+.agree.on .cbox{background:var(--pri);border-color:var(--pri);color:#fff}
+.cbox .ic{font-size:15px;stroke-width:2.8}
+.agree .cl{font-size:14.5px;line-height:1.5}
+
+/* 시안 확인용 도구모음.
+   ⚠ 예전에는 top:8px right:8px 에 떠 있었는데, 봉사 찾기 헤더의 «로그인» 버튼을
+      그대로 덮어서 화면이 깨져 보였습니다. 접었다 펴는 버튼으로 바꿔
+      기본 상태에서는 아무것도 가리지 않게 했습니다. */
+#navbar{position:fixed;right:14px;bottom:14px;z-index:99;display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+#navbar select{padding:8px 10px;border-radius:10px;font-size:12px;background:#fff;border:1px solid #C9C8C3;width:auto;max-width:190px;box-shadow:0 3px 10px rgba(0,0,0,.16)}
+#devpanel{display:none;flex-direction:column;align-items:flex-end;gap:7px}
+#devpanel.on{display:flex}
+#devtoggle{width:38px;height:38px;border-radius:50%;border:1px solid #C9C8C3;background:#fff;color:#63666E;font-size:17px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;opacity:.75}
+#devtoggle:hover{opacity:1}
+#authbtn{padding:8px 12px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.16);user-select:none;white-space:nowrap}
+.authoff{background:#fff;color:#8A5A05;border:1px solid #E0C58A}
+.authon{background:var(--pri);color:#fff;border:1px solid var(--pri)}
+.idx{padding:6px 16px 32px}
+.idx h2{font-size:13px;color:var(--tx2);margin:22px 0 9px;font-weight:600}
+.idx a{display:flex;align-items:center;gap:12px;padding:15px 16px;background:var(--card);border:1px solid var(--bd);border-radius:var(--r-c);margin-bottom:8px;color:var(--tx);font-size:15px;cursor:pointer;font-weight:500}
+.idx a .ic{color:var(--pri);font-size:20px}
+.idx a span{flex:1;min-width:0}
+.idx a b{font-size:11.5px;color:var(--mu);font-weight:500}
+.center{text-align:center;padding:56px 34px 40px}
+.circle{width:70px;height:70px;border-radius:50%;background:var(--pri-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--pri)}
+.circle .ic{font-size:36px}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></symbol>
+<symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+<symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="M6 9.5l6 6 6-6"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+<symbol id="i-set" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14.5a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1v.3a2 2 0 0 1-4 0v-.2a1.6 1.6 0 0 0-2.8-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H3.4a2 2 0 0 1 0-4h.2a1.6 1.6 0 0 0 1.1-2.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 2.7-1.1V3.4a2 2 0 0 1 4 0v.2a1.6 1.6 0 0 0 2.8 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7h.3a2 2 0 0 1 0 4h-.2a1.6 1.6 0 0 0-1.5 1.1z"/></symbol>
+<symbol id="i-more" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18.5" cy="12" r="1.2"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9.5 7V4.8h5V7M6.5 7l.9 12.2a2 2 0 0 0 2 1.8h5.2a2 2 0 0 0 2-1.8L17.5 7"/></symbol>
+<symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 5h11l-1.6 3.5L16 12H5z"/></symbol>
+<symbol id="i-heartf" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 20.8S4 15.5 4 10.2A4.1 4.1 0 0 1 12 7.9a4.1 4.1 0 0 1 8 2.3c0 5.3-8 10.6-8 10.6z"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="M8.4 10.8l7.2-3.8M8.4 13.2l7.2 3.8"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="M10.5 13.5a4 4 0 0 0 5.7 0l2.6-2.6a4 4 0 1 0-5.7-5.7L11.8 6.5"/><path d="M13.5 10.5a4 4 0 0 0-5.7 0l-2.6 2.6a4 4 0 1 0 5.7 5.7l1.3-1.3"/></symbol>
+<symbol id="i-bag" viewBox="0 0 24 24"><path d="M4.5 8h15l-1 12.2a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8z"/><path d="M8.8 8V5.8a3.2 3.2 0 0 1 6.4 0V8"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+<symbol id="i-calheart" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M12 18s-3-2-3-4a1.7 1.7 0 0 1 3-1 1.7 1.7 0 0 1 3 1c0 2-3 4-3 4z"/></symbol>
+<symbol id="i-paw" viewBox="0 0 24 24"><circle cx="5.5" cy="8" r="1.8"/><circle cx="9.5" cy="5.5" r="1.8"/><circle cx="14.5" cy="5.5" r="1.8"/><circle cx="18.5" cy="8" r="1.8"/><path d="M12 11c-3 0-5 2.3-5 4.8 0 2 1.6 3.2 3.4 3.2h3.2c1.8 0 3.4-1.2 3.4-3.2C17 13.3 15 11 12 11z"/></symbol>
+<symbol id="i-leaf" viewBox="0 0 24 24"><path d="M4 20c0-8 6-14.5 16-15.5C21 15 14.5 21 5.5 21H4z"/><path d="M4 20c4-4.5 7.5-6.5 11.5-8.5"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v14H6.5A2.5 2.5 0 0 0 4 19.5z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H19v4H6.5A2.5 2.5 0 0 1 4 19.5z"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.5S4.5 15.5 4.5 10.3A3.8 3.8 0 0 1 12 8.2a3.8 3.8 0 0 1 7.5 2.1c0 5.2-7.5 10.2-7.5 10.2z"/></symbol>
+<symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V6.5L11.5 3 19 6.5V21"/><path d="M2 21h20M9.5 21v-5h5v5"/><path d="M8 9.5h1.5M14 9.5h1.5M8 13h1.5M14 13h1.5"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.7 3.1-6.2 7-6.2s7 2.5 7 6.2"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9.5" cy="8" r="3.2"/><path d="M3.5 20c0-3.4 2.7-5.7 6-5.7s6 2.3 6 5.7"/><path d="M16.5 5.2a3.2 3.2 0 0 1 0 6M18 14.6c2 .7 3.5 2.6 3.5 5.4"/></symbol>
+<symbol id="i-usercog" viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.4"/><path d="M4 20c0-3.5 2.7-5.9 6-5.9"/><circle cx="17.5" cy="17.5" r="2.6"/><path d="M17.5 13.8v1.1M17.5 20.1v1.1M13.8 17.5h1.1M20.1 17.5h1.1"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4.2L19 9.2 14.8 5 4 15.8z"/><path d="M13.6 6.2l4.2 4.2"/></symbol>
+<symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 11a4 4 0 0 1 4-4h12"/><path d="M17 4l3 3-3 3"/><path d="M20 13a4 4 0 0 1-4 4H4"/><path d="M7 14l-3 3 3 3"/></symbol>
+<symbol id="i-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="8" rx="1.8"/><rect x="13.5" y="3" width="7.5" height="5" rx="1.8"/><rect x="13.5" y="10.5" width="7.5" height="10.5" rx="1.8"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.8"/></symbol>
+<symbol id="i-login" viewBox="0 0 24 24"><path d="M14 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M14 12H4M8 8l-4 4 4 4"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3v5h5"/><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M12 11.5v5M9.5 14h5"/></symbol>
+<symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M7 3h10v3.2L12 12l5 5.8V21H7v-3.2L12 12 7 6.2z"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7.5 3v6c0 4.8-3.2 8-7.5 9.5C7.7 20 4.5 16.8 4.5 12V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.8L21 20H3z"/><path d="M12 10v4M12 17h.01"/></symbol>
+<symbol id="i-msg" viewBox="0 0 24 24"><path d="M20 15.5a2 2 0 0 1-2 2H8l-4 3.2V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 12.5h5"/></symbol>
+<symbol id="i-photo" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="10" r="1.6"/><path d="M4 18l5-5 3 3 3-3 5 5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.3l3.2 2"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8h.01"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+<symbol id="i-hand" viewBox="0 0 24 24"><path d="M11 13V5.5a1.5 1.5 0 0 1 3 0V12"/><path d="M14 11.5V4.8a1.5 1.5 0 0 1 3 0v8.7"/><path d="M17 9.8a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-1.5a6 6 0 0 1-5.3-3.2L5 13.5a1.6 1.6 0 0 1 2.6-1.8L11 15"/></symbol>
+
+<!-- ── 봉사모아 임시 로고 ──
+     «모아»를 형태로 표현했습니다. 사람 셋(원)이 하트를 향해 모이는 모양입니다.
+     · 유기동물에 한정되지 않아 나중에 분야가 늘어도 그대로 씁니다
+     · 단색이라 어디에 올려도 깨지지 않고, 16px로 줄여도 형태가 남습니다
+     · 파일 안에 SVG로 들어 있어 인터넷이 끊겨도 뜹니다             -->
+<symbol id="logo-mark" viewBox="0 0 48 48">
+  <path d="M24 38.5S12.5 31.2 12.5 23.4a6.4 6.4 0 0 1 11.5-3.9 6.4 6.4 0 0 1 11.5 3.9C35.5 31.2 24 38.5 24 38.5Z"
+        fill="currentColor" stroke="none"/>
+  <circle cx="24" cy="8.6" r="3.5" fill="currentColor" stroke="none"/>
+  <circle cx="8.4" cy="16.4" r="3" fill="currentColor" stroke="none" opacity=".72"/>
+  <circle cx="39.6" cy="16.4" r="3" fill="currentColor" stroke="none" opacity=".72"/>
+</symbol>
+</defs></svg>
+
+<div id="navbar">
+  <div id="devpanel">
+    <span id="authbtn" class="authoff" onclick="setAuth(!AUTH)">비로그인</span>
+    <select id="jump" onchange="go(this.value)"></select>
+  </div>
+  <button id="devtoggle" onclick="toggleDev()" title="시안 확인용 도구">☰</button>
+</div>
+
+<div class="phone" id="phone">
+
+<!-- ============ 목차 ============ -->
+<div class="scr on" id="idx">
+  <div class="hd plain"><h1>봉사모아 화면 시안<span class="sub">v0.6 · 눌러서 확인하세요</span></h1></div>
+  <div class="body idx">
+    <h2>최초 진입</h2>
+    <a onclick="go('v-splash')"><svg class="ic"><use href="#i-hand"/></svg><span>스플래시</span><b>00</b></a>
+
+    <h2>봉사자</h2>
+    <a onclick="go('v-list')"><svg class="ic"><use href="#i-search"/></svg><span>봉사 찾기</span><b>B1</b></a>
+    <a onclick="go('v-all')"><svg class="ic"><use href="#i-search"/></svg><span>센터 전체 목록</span><b>B1-1</b></a>
+    <a onclick="go('v-center')"><svg class="ic"><use href="#i-building"/></svg><span>센터 상세 · 달력</span><b>B2</b></a>
+    <a onclick="go('v-reviews')"><svg class="ic"><use href="#i-msg"/></svg><span>후기 목록</span><b>B3</b></a>
+    <a onclick="go('v-rv1')"><svg class="ic"><use href="#i-photo"/></svg><span>후기 상세</span><b>B3-1</b></a>
+    <a onclick="navGo('v-my')"><svg class="ic"><use href="#i-calheart"/></svg><span>내 봉사 · 참석 확인</span><b>B4</b></a>
+    <a onclick="go('v-hist')"><svg class="ic"><use href="#i-clock"/></svg><span>지난 봉사 상세 · 다시 신청</span><b>B4-1</b></a>
+    <a onclick="go('v-up')"><svg class="ic"><use href="#i-cal"/></svg><span>다가오는 봉사 상세 · 취소</span><b>B4-2</b></a>
+    <a onclick="go('v-review')"><svg class="ic"><use href="#i-edit"/></svg><span>후기 쓰기</span><b>B5</b></a>
+    <a onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span><b>B6</b></a>
+    <a onclick="go('v-fav')"><svg class="ic"><use href="#i-heart"/></svg><span>찜한 센터</span><b>B7</b></a>
+    <a onclick="go('v-pub')"><svg class="ic"><use href="#i-user"/></svg><span>봉사자 공개 프로필</span><b>B8</b></a>
+
+    <h2>센터 — 봉사 관리</h2>
+    <a onclick="go('c-dash')"><svg class="ic"><use href="#i-dash"/></svg><span>센터 홈 · 센터 전환</span><b>A3</b></a>
+    <a onclick="go('c-sched')"><svg class="ic"><use href="#i-repeat"/></svg><span>일정 등록</span><b>A5</b></a>
+    <a onclick="go('c-sessions')"><svg class="ic"><use href="#i-cal"/></svg><span>회차 목록</span><b>A6</b></a>
+    <a onclick="go('c-session')"><svg class="ic"><use href="#i-users"/></svg><span>다가오는 회차 명단</span><b>A7</b></a>
+    <a onclick="go('c-past')"><svg class="ic"><use href="#i-clock"/></svg><span>지난 회차 명단</span><b>A7-1</b></a>
+
+    <h2>센터 — 센터 관리</h2>
+    <a onclick="go('c-info')"><svg class="ic"><use href="#i-edit"/></svg><span>센터 정보 · 확인 사항</span><b>A4</b></a>
+    <a onclick="go('c-members')"><svg class="ic"><use href="#i-usercog"/></svg><span>관리자 관리</span><b>A8</b></a>
+    <a onclick="go('c-reviews')"><svg class="ic"><use href="#i-msg"/></svg><span>받은 후기</span><b>A9</b></a>
+
+    <h2>가입 · 등록</h2>
+    <a onclick="go('c-login')"><svg class="ic"><use href="#i-login"/></svg><span>로그인</span><b>A1</b></a>
+    <a onclick="go('c-signup')"><svg class="ic"><use href="#i-user"/></svg><span>회원가입</span><b>A1-1</b></a>
+    <a onclick="loginGate('apply','8월 15일 (토) 10:00 – 13:00')"><svg class="ic"><use href="#i-login"/></svg><span>로그인 유도 팝업 (신청 시)</span><b>팝업</b></a>
+    <a onclick="shareSheet()"><svg class="ic"><use href="#i-share"/></svg><span>공유하기 팝업</span><b>팝업</b></a>
+    <a onclick="centerEntry()"><svg class="ic"><use href="#i-building"/></svg><span>센터 진입 갈림길 팝업</span><b>팝업</b></a>
+    <a onclick="go('v-joinreq')"><svg class="ic"><use href="#i-search"/></svg><span>관리자 등록 요청</span><b>A2-0</b></a>
+    <a onclick="go('c-new')"><svg class="ic"><use href="#i-file"/></svg><span>센터 등록 신청</span><b>A2</b></a>
+    <a onclick="go('c-pending')"><svg class="ic"><use href="#i-hourglass"/></svg><span>승인 대기</span><b>A2-1</b></a>
+
+    <h2>운영자 (개발자)</h2>
+    <a onclick="go('s-list')"><svg class="ic"><use href="#i-shield"/></svg><span>센터 승인 대기</span><b>S1</b></a>
+    <a onclick="go('s-detail')"><svg class="ic"><use href="#i-copy"/></svg><span>승인 검토 · 중복 검사</span><b>S2</b></a>
+    <a onclick="go('s-reports')"><svg class="ic"><use href="#i-flag"/></svg><span>신고 처리</span><b>S3</b></a>
+  </div>
+</div>
+
+<!-- ============ 00 스플래시 (로딩 중에만) ============ -->
+<div class="scr" id="v-splash">
+  <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0">
+    <div class="logo" style="--lg:88px;margin-bottom:0"><svg class="ic"><use href="#logo-mark"/></svg></div>
+    <div style="font-size:27px;font-weight:800;letter-spacing:-.045em;margin-top:20px">봉사모아</div>
+    <div style="font-size:13.5px;color:var(--tx2);margin-top:7px;letter-spacing:-.01em">봉사할 곳을 한곳에</div>
+    <div class="spin"></div>
+  </div>
+  <div class="cta" style="border:none;background:transparent">
+    <div class="hint" style="margin:0">화면을 불러오는 동안에만 보입니다. 누를 것이 없고, 다 불러오면 저절로 넘어갑니다.</div>
+    <button class="btn btn-o" style="margin-top:12px" onclick="go('v-list')">다음 화면 보기</button>
+  </div>
+</div>
+
+<!-- ============ B1 봉사 찾기 ============ -->
+<div class="scr" id="v-list">
+  <div class="hd root">
+    <h1><span class="logo sm"><svg class="ic"><use href="#logo-mark"/></svg></span>봉사 찾기</h1>
+    <span class="loginbtn" onclick="go('c-login')">로그인</span>
+    <div class="pfp s38 hdpfp authonly" style="display:none" onclick="go('v-profile')">김*</div>
+  </div>
+  <div class="srch"><div class="in"><svg class="ic"><use href="#i-search"/></svg><input placeholder="센터 이름으로 검색"></div></div>
+  <div class="chips">
+    <div class="chip on" onclick="chip(this)">전체</div>
+    <div class="chip" onclick="chip(this)">동물</div>
+    <div class="chip" onclick="chip(this)">환경</div>
+    <div class="chip" onclick="chip(this)">아동·청소년</div>
+    <div class="chip" onclick="chip(this)">어르신</div>
+    <div class="chip" onclick="chip(this)">장애인</div>
+    <div class="chip" onclick="chip(this)">기타</div>
+  </div>
+  <div class="body">
+    <!-- 필터는 버튼 하나. 처음 들어오면 아무것도 걸리지 않은 «서울 전체» 목록입니다. -->
+    <div class="fone">
+      <div class="fbtn2" id="fbtn" onclick="openSheet('sheetF')"><svg class="ic"><use href="#i-set"/></svg>필터</div>
+      <div class="n" id="rcount">서울 전체 · <b>128</b></div>
+    </div>
+    <div class="group">
+      <div class="crow" onclick="go('v-center')">
+        <div class="tl"><svg class="ic"><use href="#i-paw"/></svg><div class="ph">대표 이미지</div></div>
+        <div class="cinfo">
+          <div class="nm">행복 유기견 보호소</div>
+          <div class="mt">서울 은평구 · 동물</div>
+          <div><span class="nxt">8월 15일 (토)부터</span></div>
+        </div>
+      </div>
+      <div class="crow" onclick="go('v-center')">
+        <div class="tl" style="background:#EAF3DE;color:#3B6D11"><svg class="ic"><use href="#i-leaf"/></svg><div class="ph">대표 이미지</div></div>
+        <div class="cinfo">
+          <div class="nm">한강 지킴이</div>
+          <div class="mt">서울 마포구 · 환경</div>
+          <div><span class="nxt">8월 16일 (일)부터</span></div>
+        </div>
+      </div>
+      <div class="crow" onclick="go('v-center')">
+        <div class="tl" style="background:#E6F1FB;color:#185FA5"><svg class="ic"><use href="#i-book"/></svg><div class="ph">대표 이미지</div></div>
+        <div class="cinfo">
+          <div class="nm">푸른꿈 지역아동센터</div>
+          <div class="mt">서울 강북구 · 아동·청소년</div>
+          <div><span class="nxt">8월 16일 (일)부터</span></div>
+        </div>
+      </div>
+      <div class="crow" style="cursor:default;opacity:.55">
+        <div class="tl" style="background:#F1F1EE;color:var(--mu)"><svg class="ic"><use href="#i-heart"/></svg></div>
+        <div class="cinfo">
+          <div class="nm">늘봄 어르신 돌봄센터</div>
+          <div class="mt">서울 성북구 · 어르신</div>
+          <div><span class="nxt none">지금은 모집이 없어요</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- 무한 스크롤을 쓰지 않습니다. 끝없이 늘어나면 아래 있는 것에 영영 닿지 못합니다. -->
+    <div style="padding:16px 16px 4px">
+      <button class="btn btn-o" onclick="go('v-all')">센터 전체 보기</button>
+    </div>
+    <div class="foot">초록 뱃지는 <b>가장 빨리 갈 수 있는 날</b>입니다.</div>
+    <div class="group" style="margin-top:14px">
+      <div class="row" onclick="if(!needLogin('center',centerEntry))centerEntry()">
+        <div class="thumb" style="background:#EAF3DE;color:#3B6D11"><svg class="ic"><use href="#i-building"/></svg></div>
+        <div class="g"><div class="t">봉사센터를 운영하세요?</div><div class="s">일정과 신청자 명단을 무료로 관리하세요</div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+    </div>
+  </div>
+  <div class="nav">
+    <div class="on"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div onclick="navGo('v-my')"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div onclick="navGo('c-dash')"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+  <!-- 필터 시트 하나에 지역·날짜·시간대를 모았습니다. -->
+  <div id="sheetF" class="dim" style="display:none" onclick="if(event.target===this)closeSheet('sheetF')">
+    <div class="sheet">
+      <div class="grip"></div>
+      <h3>필터</h3>
+
+      <div class="fsec">지역</div>
+      <div class="two">
+        <select><option>서울</option><option>경기</option><option>인천</option></select>
+        <select><option>전체</option><option>은평구</option><option>마포구</option><option>강북구</option><option>성북구</option></select>
+      </div>
+
+      <div class="fsec">날짜</div>
+      <div class="fwrap">
+        <div class="fpill on" onclick="fpill(this,1)">상관없어요</div>
+        <div class="fpill" onclick="fpill(this,1)">이번 주</div>
+        <div class="fpill" onclick="fpill(this,1)">다음 주</div>
+        <div class="fpill" onclick="fpill(this,1)">주말만</div>
+        <div class="fpill" onclick="fpill(this,1)">날짜 직접 고르기</div>
+      </div>
+
+      <div class="fsec">시간대</div>
+      <div class="fwrap">
+        <div class="fpill on" onclick="fpill(this,1)">상관없어요</div>
+        <div class="fpill" onclick="fpill(this,1)">오전</div>
+        <div class="fpill" onclick="fpill(this,1)">오후</div>
+      </div>
+
+      <div style="display:flex;gap:9px;margin-top:26px">
+        <button class="btn btn-o" style="flex:0 0 34%" onclick="resetFilter()">초기화</button>
+        <button class="btn btn-p" style="flex:1" onclick="applyFilter()">결과 보기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⚠ 개발 지침 · v-list 와 v-all 은 «한 컴포넌트»입니다
+     시안에서만 화면 두 개로 그렸을 뿐, 같은 목록을 다르게 보여주는 것입니다.
+       <CenterList limit={4} />   ← 봉사 찾기 (미리보기 + 더 보기 버튼)
+       <CenterList />             ← 센터 전체 (전부, 무한 스크롤)
+     두 번 만들면 카드 하나 고칠 때 두 곳을 고쳐야 합니다.
+     필터 시트(sheetF)도 하나를 두 화면이 함께 씁니다.
+ ============ B1-1 센터 전체 목록 ============
+     봉사 찾기는 «가까운 몇 곳» 을 보여주는 자리이고,
+     전부 훑어보고 싶을 때 이 화면으로 들어옵니다.
+     목록을 아래로 늘리지 않고 화면을 나누면, 봉사 찾기 아래쪽에 있는
+     «봉사센터를 운영하세요?» 가 계속 닿을 수 있는 자리에 남습니다.     -->
+<div class="scr" id="v-all">
+  <div class="hd plain"><svg class="ic" onclick="goBack('v-list')"><use href="#i-back"/></svg><h1>센터 전체<span class="sub">서울 전체 · 128</span></h1></div>
+  <div class="body">
+    <div class="fone">
+      <div class="fbtn2" onclick="openSheet('sheetF')"><svg class="ic"><use href="#i-set"/></svg>필터</div>
+      <div class="n">가까운 순</div>
+    </div>
+    <div class="group">
+      <div class="crow" onclick="go('v-center')">
+        <div class="tl"><svg class="ic"><use href="#i-paw"/></svg><div class="ph">대표 이미지</div></div>
+        <div class="cinfo">
+          <div class="nm">행복 유기견 보호소</div>
+          <div class="mt">서울 은평구 · 동물</div>
+          <div><span class="nxt">8월 15일 (토)부터</span></div>
+        </div>
+      </div>
+      <div class="crow" onclick="go('v-center')">
+        <div class="tl" style="background:#EAF3DE;color:#3B6D11"><svg class="ic"><use href="#i-leaf"/></svg><div class="ph">대표 이미지</div></div>
+        <div class="cinfo">
+          <div class="nm">한강 지킴이</div>
+          <div class="mt">서울 마포구 · 환경</div>
+          <div><span class="nxt">8월 16일 (일)부터</span></div>
+        </div>
+      </div>
+      <div class="crow" onclick="go('v-center')">
+        <div class="tl" style="background:#E6F1FB;color:#185FA5"><svg class="ic"><use href="#i-book"/></svg><div class="ph">대표 이미지</div></div>
+        <div class="cinfo">
+          <div class="nm">푸른꿈 지역아동센터</div>
+          <div class="mt">서울 강북구 · 아동·청소년</div>
+          <div><span class="nxt">8월 16일 (일)부터</span></div>
+        </div>
+      </div>
+      <div class="crow" onclick="go('v-center')">
+        <div class="tl" style="background:#FBEFD3;color:#8A5A05"><svg class="ic"><use href="#i-hand"/></svg><div class="ph">대표 이미지</div></div>
+        <div class="cinfo">
+          <div class="nm">가온 장애인 주간보호</div>
+          <div class="mt">서울 서대문구 · 장애인</div>
+          <div><span class="nxt">8월 18일 (화)부터</span></div>
+        </div>
+      </div>
+      <div class="crow" onclick="go('v-center')">
+        <div class="tl" style="background:#EAF3DE;color:#3B6D11"><svg class="ic"><use href="#i-leaf"/></svg><div class="ph">대표 이미지</div></div>
+        <div class="cinfo">
+          <div class="nm">불광천 환경지킴</div>
+          <div class="mt">서울 은평구 · 환경</div>
+          <div><span class="nxt">8월 20일 (목)부터</span></div>
+        </div>
+      </div>
+      <div class="crow" onclick="go('v-center')">
+        <div class="tl"><svg class="ic"><use href="#i-paw"/></svg><div class="ph">대표 이미지</div></div>
+        <div class="cinfo">
+          <div class="nm">아름다운 유기묘 쉼터</div>
+          <div class="mt">서울 마포구 · 동물</div>
+          <div><span class="nxt">8월 22일 (토)부터</span></div>
+        </div>
+      </div>
+      <div class="crow" style="cursor:default;opacity:.55">
+        <div class="tl" style="background:#F1F1EE;color:var(--mu)"><svg class="ic"><use href="#i-heart"/></svg></div>
+        <div class="cinfo">
+          <div class="nm">늘봄 어르신 돌봄센터</div>
+          <div class="mt">서울 성북구 · 어르신</div>
+          <div><span class="nxt none">지금은 모집이 없어요</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">아래로 내리면 다음 센터가 이어집니다.</div>
+  </div>
+  <div class="nav">
+    <div class="on"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div onclick="navGo('v-my')"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div onclick="navGo('c-dash')"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+</div>
+
+<!-- ============ B2 센터 상세 ============ -->
+<div class="scr" id="v-center">
+  <div class="hd plain">
+    <svg class="ic" onclick="goBack('v-list')"><use href="#i-back"/></svg><h1>센터 상세</h1>
+    <svg class="ic" id="favbtn" style="font-size:23px;color:var(--mu)" onclick="fav()"><use href="#i-heart"/></svg>
+    <svg class="ic" style="font-size:22px;color:var(--tx2)" onclick="shareSheet()"><use href="#i-share"/></svg>
+  </div>
+  <div class="body">
+    <div class="hero"><svg class="ic"><use href="#i-paw"/></svg><div class="ph">대표 이미지</div></div>
+    <div class="htitle">
+      <h2>행복 유기견 보호소</h2>
+      <div class="m">서울 은평구 · 동물 · 후기 12개</div>
+    </div>
+    <div class="hbtn">
+      <button onclick="centerInfo()"><svg class="ic"><use href="#i-info"/></svg>센터 정보</button>
+      <button onclick="go('v-reviews')"><svg class="ic"><use href="#i-msg"/></svg>후기 12</button>
+    </div>
+
+    <div style="background:var(--pri-bg);padding:13px 20px;display:flex;align-items:center;gap:9px;cursor:pointer" onclick="go('c-dash')">
+      <svg class="ic" style="font-size:19px;color:var(--ok)"><use href="#i-building"/></svg>
+      <div style="flex:1;font-size:14px;color:var(--ok);font-weight:600">내가 관리하는 센터예요</div>
+      <div style="font-size:14px;color:var(--ok)">관리하기 ›</div>
+    </div>
+
+    <div class="sec">가기 전에 확인하세요</div>
+    <div class="conds">
+      <span class="cond imp"><svg class="ic"><use href="#i-alert"/></svg>만 14세 이상</span>
+      <span class="cond"><svg class="ic"><use href="#i-check"/></svg>실외 활동</span>
+      <span class="cond"><svg class="ic"><use href="#i-check"/></svg>동물과 접촉</span>
+      <span class="cond"><svg class="ic"><use href="#i-check"/></svg>주차 불가</span>
+    </div>
+    <div class="safe" style="margin-top:12px">
+      <div class="ib"><svg class="ic"><use href="#i-shield"/></svg></div>
+      <div><div class="l">개인·소규모 센터입니다</div><div class="v">봉사자 보험과 봉사시간 실적이 없습니다. 신청할 때 한 번 더 안내드려요.</div></div>
+    </div>
+    <div class="bring" style="margin-top:10px">
+      <div class="ib"><svg class="ic"><use href="#i-bag"/></svg></div>
+      <div class="l">준비물</div>
+      <div class="v">긴바지 · 운동화 · 개인 물병</div>
+    </div>
+
+    <div class="sec">날짜 선택</div>
+
+    <div class="soon" onclick="apply('8월 9일 (일)','10:00 – 13:00')">
+      <div style="min-width:0">
+        <div class="l">가장 빠른 봉사</div>
+        <div class="d">8월 9일 (일) 10:00</div>
+      </div>
+      <button class="b">신청</button>
+    </div>
+
+      <div class="cal">
+        <div class="calhd">
+          <svg class="ic dis"><use href="#i-left"/></svg>
+          <div class="m">2026년 8월</div>
+          <svg class="ic" onclick="calNext()"><use href="#i-right"/></svg>
+        </div>
+        <div class="cg">
+          <div class="cw" style="color:#C96B6B">일</div><div class="cw">월</div><div class="cw">화</div><div class="cw">수</div><div class="cw">목</div><div class="cw">금</div><div class="cw" style="color:#6B86C9">토</div>
+        </div>
+
+        <div class="cg" id="cal-week">
+          <div class="cd pastday"></div><div class="cd pastday"></div><div class="cd pastday"></div><div class="cd pastday"></div><div class="cd pastday"></div><div class="cd pastday"></div><div class="cd pastday">1</div>
+          <div class="cd pastday">2</div><div class="cd pastday">3</div><div class="cd pastday">4</div><div class="cd pastday">5</div><div class="cd pastday">6</div><div class="cd pastday">7</div><div class="cd pastday today">8</div>
+          <div class="cd open" onclick="apply('8월 9일 (일)','10:00 – 13:00')">9<i class="av"></i></div><div class="cd">10</div><div class="cd">11</div><div class="cd">12</div><div class="cd">13</div><div class="cd">14</div><div class="cd open" onclick="apply('8월 15일 (토)','10:00 – 13:00')">15<i class="av"></i></div>
+          <div class="cd full">16<small>마감</small></div><div class="cd">17</div><div class="cd">18</div><div class="cd">19</div><div class="cd">20</div><div class="cd">21</div><div class="cd full">22<small>마감</small></div>
+          <div class="cd open" onclick="conflict()">23<i class="av"></i></div><div class="cd">24</div><div class="cd">25</div><div class="cd">26</div><div class="cd">27</div><div class="cd">28</div><div class="cd closed">29<small>휴무</small></div>
+          <div class="cd open" onclick="apply('8월 30일 (일)','10:00 – 13:00')">30<i class="av"></i></div><div class="cd">31</div>
+        </div>
+
+        <div class="cg" id="cal-daily" style="display:none">
+          <div class="cd pastday"></div><div class="cd pastday"></div><div class="cd pastday"></div><div class="cd pastday"></div><div class="cd pastday"></div><div class="cd pastday"></div><div class="cd">1</div>
+          <div class="cd">2</div><div class="cd pastday">3</div><div class="cd pastday">4</div><div class="cd pastday">5</div><div class="cd pastday">6</div><div class="cd pastday">7</div><div class="cd pastday today">8</div>
+          <div class="cd">9</div><div class="cd open" onclick="apply('8월 10일 (월)','10:00 – 17:00')">10<i class="av"></i></div><div class="cd open" onclick="apply('8월 11일 (화)','10:00 – 17:00')">11<i class="av"></i></div><div class="cd open" onclick="apply('8월 12일 (수)','10:00 – 17:00')">12<i class="av"></i></div><div class="cd open" onclick="apply('8월 13일 (목)','10:00 – 17:00')">13<i class="av"></i></div><div class="cd full">14<small>마감</small></div><div class="cd">15</div>
+          <div class="cd">16</div><div class="cd open" onclick="apply('8월 17일 (월)','10:00 – 17:00')">17<i class="av"></i></div><div class="cd open" onclick="apply('8월 18일 (화)','10:00 – 17:00')">18<i class="av"></i></div><div class="cd open" onclick="apply('8월 19일 (수)','10:00 – 17:00')">19<i class="av"></i></div><div class="cd open" onclick="apply('8월 20일 (목)','10:00 – 17:00')">20<i class="av"></i></div><div class="cd open" onclick="apply('8월 21일 (금)','10:00 – 17:00')">21<i class="av"></i></div><div class="cd">22</div>
+          <div class="cd">23</div><div class="cd closed">24<small>휴무</small></div><div class="cd open" onclick="apply('8월 25일 (화)','10:00 – 17:00')">25<i class="av"></i></div><div class="cd open" onclick="apply('8월 26일 (수)','10:00 – 17:00')">26<i class="av"></i></div><div class="cd open" onclick="apply('8월 27일 (목)','10:00 – 17:00')">27<i class="av"></i></div><div class="cd open" onclick="apply('8월 28일 (금)','10:00 – 17:00')">28<i class="av"></i></div><div class="cd">29</div>
+          <div class="cd">30</div><div class="cd open" onclick="apply('8월 31일 (월)','10:00 – 17:00')">31<i class="av"></i></div>
+        </div>
+
+        <div class="leg">
+          <span><i style="background:var(--pri-bg)"></i>신청 가능 (누를 수 있음)</span>
+          <span><i style="background:#F1F1EE"></i>마감 · 휴무 (누를 수 없음)</span>
+        </div>
+      </div>
+    <div class="devnote"><b>시안 확인용</b> · <a onclick="openSheet('sheetL')">매일 운영하는 센터의 달력 보기</a></div>
+
+    <div class="sec">후기 12<span class="more" onclick="go('v-reviews')">전체 보기 ›</span></div>
+    <div class="group">
+      <div class="rvcard" onclick="go('v-rv1')">
+        <div class="rvimg"><svg class="ic"><use href="#i-photo"/></svg><div class="n">3</div></div>
+        <div class="rvc">
+          <div class="tt">처음 가는 분께 드리는 후기</div>
+          <div class="ex">아이들이 정말 순해요. 선생님들이 하나하나 알려주셔서 어렵지 않았습니다. 다음 주에 또 갑니다.</div>
+          <div class="mt"><span>김*연</span>·<span>8월 2일</span></div>
+        </div>
+      </div>
+      <div class="rvcard" onclick="go('v-rv1')">
+        <div class="rvimg" style="background:#F1F1EE;color:var(--mu)"><svg class="ic"><use href="#i-msg"/></svg></div>
+        <div class="rvc">
+          <div class="tt">편한 옷 꼭 챙기세요</div>
+          <div class="ex">생각보다 몸을 많이 씁니다. 그래도 보람 있었어요. 주차가 안 돼서 버스 타고 갔습니다.</div>
+          <div class="mt"><span>박*호</span>·<span>7월 26일</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">정원이 찬 날짜는 신청할 수 없습니다. 취소가 생기면 다시 열립니다.</div>
+
+    <!-- 관리자 요청은 «찾는 사람만» 보면 됩니다.
+         봉사자가 100명이면 이걸 누를 사람은 한둘이라, 눈에 띄면 오히려 방해가 됩니다. -->
+    <div class="quiet" onclick="askAdmin()">이 센터의 관리자이신가요?</div>
+  </div>
+
+  <div id="sheetL" class="dim" style="display:none" onclick="if(event.target===this)closeSheet('sheetL')">
+    <div class="sheet">
+      <div class="grip"></div>
+      <h3>시안 확인용 · 운영 요일 바꿔보기</h3>
+      <div class="pick wide" style="padding:0;margin-bottom:12px">
+        <div id="cm-week" class="on" onclick="calMode('week')">주말만</div>
+        <div id="cm-daily" onclick="calMode('daily')">매주 월~금</div>
+      </div>
+      <div style="font-size:13px;color:var(--tx2);line-height:1.65;margin-bottom:22px">
+        매일 운영하는 센터는 달력이 거의 다 찹니다. 그래서 <b>남은 자리 수는 표시하지 않고</b> «갈 수 있다 / 없다» 만 색으로 구분합니다. 숫자가 칸마다 붙으면 읽히지 않습니다.
+      </div>
+      <button class="btn btn-p" onclick="closeSheet('sheetL')">닫기</button>
+    </div>
+  </div>
+  <div class="nav">
+    <div class="on"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div onclick="navGo('v-my')"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div onclick="navGo('c-dash')"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+</div>
+
+<!-- ============ B2-1 신청 완료 ============ -->
+<div class="scr" id="v-done">
+  <div class="hd plain"><h1>신청 완료</h1><svg class="ic" style="color:var(--tx2)" onclick="go('v-list')"><use href="#i-x"/></svg></div>
+  <div class="body">
+    <div class="center">
+      <div class="circle"><svg class="ic"><use href="#i-check"/></svg></div>
+      <div style="font-size:21px;font-weight:700;letter-spacing:-.03em">신청이 확정됐어요</div>
+      <div style="font-size:15px;color:var(--tx2);margin-top:12px;line-height:1.7">8월 15일 (토) 10:00 – 13:00<br>행복 유기견 보호소 · 센터 정문 앞</div>
+    </div>
+    <div class="ban g" style="margin-top:0">
+      <div class="l">잊지 마세요</div>
+      <div class="c"><b>준비물 · 긴바지, 운동화, 개인 물병</b><br>만 14세 이상 · 주차 불가 · 실외 활동<br>그날 필요한 일은 현장에서 안내드립니다.</div>
+    </div>
+    <div class="safe" style="margin-top:12px">
+      <div class="ib"><svg class="ic"><use href="#i-shield"/></svg></div>
+      <div class="v">현장에서 <b>무리하지 마세요.</b> 몸이 안 좋거나 위험해 보이면 센터에 말씀하시고 쉬셔도 됩니다.</div>
+    </div>
+    <div class="box">
+      <div class="kv"><span>센터 연락처</span><span><a href="tel:0212345678" style="color:var(--ok);font-weight:600;text-decoration:none">02-1234-5678</a></span></div>
+      <div class="kv" style="border:none"><span>주소</span><span>서울 은평구 응암로 123</span></div>
+    </div>
+    <div class="foot" style="padding-top:10px">못 가게 되면 취소 버튼을 누르고, 당일이라면 전화로도 한 번 알려주세요.</div>
+    <div class="box" style="margin-top:6px">
+      <div style="display:flex;gap:11px;align-items:flex-start">
+        <svg class="ic" style="font-size:20px;color:var(--tx2);margin-top:2px;flex-shrink:0"><use href="#i-clock"/></svg>
+        <div style="font-size:13.5px;color:var(--tx2);line-height:1.7">봉사가 끝나면 <b style="color:var(--tx)">3일 안에</b> ‘내 봉사’에서 참석 확인을 눌러주세요.</div>
+      </div>
+    </div>
+  </div>
+  <div class="cta">
+    <button class="btn sso-k" onclick="shareSheet()"><svg class="ic"><use href="#i-share"/></svg>같이 갈 사람 부르기</button>
+    <div class="two" style="margin-top:9px">
+      <button class="btn btn-o" onclick="go('v-list')">더 찾아보기</button>
+      <button class="btn btn-o" onclick="go('v-my')">내 봉사 보기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ B3 후기 목록 ============ -->
+<div class="scr" id="v-reviews">
+  <div class="hd plain"><svg class="ic" onclick="goBack('v-center')"><use href="#i-back"/></svg><h1>후기<span class="sub">행복 유기견 보호소 · 12개</span></h1></div>
+  <div class="body">
+    <div class="group" style="margin-top:4px">
+      <div class="rvcard" onclick="go('v-rv1')">
+        <div class="rvimg"><svg class="ic"><use href="#i-photo"/></svg><div class="n">3</div></div>
+        <div class="rvc">
+          <div class="tt">처음 가는 분께 드리는 후기</div>
+          <div class="ex">아이들이 정말 순해요. 선생님들이 하나하나 알려주셔서 어렵지 않았습니다. 다음 주에 또 갑니다.</div>
+          <div class="mt"><span>김*연</span>·<span>8월 2일</span></div>
+        </div>
+      </div>
+      <div class="rvcard" onclick="go('v-rv1')">
+        <div class="rvimg" style="background:#F1F1EE;color:var(--mu)"><svg class="ic"><use href="#i-msg"/></svg></div>
+        <div class="rvc">
+          <div class="tt">편한 옷 꼭 챙기세요</div>
+          <div class="ex">생각보다 몸을 많이 씁니다. 그래도 보람 있었어요. 주차가 안 돼서 버스 타고 갔습니다.</div>
+          <div class="mt"><span>박*호</span>·<span>7월 26일</span></div>
+        </div>
+      </div>
+      <div class="rvcard" onclick="go('v-rv1')">
+        <div class="rvimg" style="background:#FBF1DE;color:#8A5A05"><svg class="ic"><use href="#i-photo"/></svg><div class="n">1</div></div>
+        <div class="rvc">
+          <div class="tt">버스로 가는 길 안내</div>
+          <div class="ex">주차가 안 돼서 대중교통으로 갔어요. 응암역 2번 출구에서 마을버스 7번 타면 5분입니다.</div>
+          <div class="mt"><span>이*지</span>·<span>7월 19일</span></div>
+        </div>
+      </div>
+      <div class="rvcard" onclick="go('v-rv1')">
+        <div class="rvimg" style="background:#EAF3DE;color:#3B6D11"><svg class="ic"><use href="#i-photo"/></svg><div class="n">5</div></div>
+        <div class="rvc">
+          <div class="tt">세 번째 방문 후기</div>
+          <div class="ex">늘 준비가 잘 돼 있어서 시간 낭비 없이 활동할 수 있어요. 아이들 사진 몇 장 올립니다.</div>
+          <div class="mt"><span>정*늘</span>·<span>7월 12일</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">참석 확인을 누른 봉사자만 남길 수 있습니다.<br>센터는 지울 수 없고 신고만 할 수 있습니다.</div>
+  </div>
+  <div class="nav">
+    <div class="on"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div onclick="navGo('v-my')"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div onclick="navGo('c-dash')"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+</div>
+
+<!-- ============ B3-1 후기 상세 ============ -->
+<div class="scr" id="v-rv1">
+  <div class="hd plain"><svg class="ic" onclick="goBack('v-reviews')"><use href="#i-back"/></svg><h1>후기</h1><svg class="ic" style="font-size:22px;color:var(--tx2)" onclick="rvMenu()"><use href="#i-more"/></svg></div>
+  <div class="body">
+    <div class="rvhero"><svg class="ic"><use href="#i-photo"/></svg></div>
+    <div style="display:flex;gap:8px;padding:10px 20px 0">
+      <div style="width:56px;height:56px;border-radius:10px;background:var(--pri-bg);display:flex;align-items:center;justify-content:center;color:var(--pri)"><svg class="ic" style="font-size:22px;opacity:.5"><use href="#i-photo"/></svg></div>
+      <div style="width:56px;height:56px;border-radius:10px;background:#EAF3DE;display:flex;align-items:center;justify-content:center;color:#3B6D11"><svg class="ic" style="font-size:22px;opacity:.5"><use href="#i-photo"/></svg></div>
+      <div style="width:56px;height:56px;border-radius:10px;background:#F1F1EE;display:flex;align-items:center;justify-content:center;color:var(--mu);font-size:12px;font-weight:600">+1</div>
+    </div>
+    <div style="padding:20px 20px 0"><h2 style="font-size:22px;font-weight:700;letter-spacing:-.03em;line-height:1.3">처음 가는 분께 드리는 후기</h2></div>
+    <div class="rvmeta" onclick="go('v-pub')" style="cursor:pointer">
+      <div class="avs">서</div>
+      <div style="flex:1"><div class="nm">김*연</div><div class="dt">8월 2일 봉사 · 이 센터 3번째</div></div>
+      <svg class="ic ch" style="font-size:19px;color:#C9C9C4"><use href="#i-right"/></svg>
+    </div>
+    <div class="rvbody">아이들이 정말 순해요. 처음 갔는데 선생님들이 하나하나 알려주셔서 어렵지 않았습니다.
+
+오전에는 견사 청소를 했고 오후에는 산책을 나갔어요. 산책은 두 명이 한 조로 다니는데 처음이면 경험 있는 분과 짝이 됩니다.
+
+주차가 안 되니 대중교통 이용하세요. 응암역에서 마을버스로 5분입니다.
+
+다음 주에 또 갑니다.</div>
+    <div class="foot" style="padding-top:22px">참석 확인을 마친 봉사자가 남긴 글입니다.</div>
+  </div>
+  <div class="nav">
+    <div class="on"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div onclick="navGo('v-my')"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div onclick="navGo('c-dash')"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+</div>
+
+<!-- ============ B8 공개 프로필 ============ -->
+<div class="scr" id="v-pub">
+  <div class="hd plain"><svg class="ic" onclick="goBack('v-rv1')"><use href="#i-back"/></svg><h1>봉사자 정보</h1><svg class="ic" style="font-size:20px;color:var(--tx2)" onclick="reportUser()"><use href="#i-flag"/></svg></div>
+  <div class="body">
+    <div class="center" style="padding:34px 34px 22px">
+      <div class="av" style="width:76px;height:76px;font-size:26px;margin:0 auto 16px">서</div>
+      <div style="font-size:21px;font-weight:700;letter-spacing:-.03em">김*연</div>
+      <div style="font-size:14px;color:var(--tx2);margin-top:7px">2025년 3월부터 활동 중</div>
+    </div>
+    <div class="stat">
+      <div><div class="n">13</div><div class="l">참석한 봉사</div></div>
+      <div><div class="n">5</div><div class="l">함께한 센터</div></div>
+      <div><div class="n">4</div><div class="l">쓴 후기</div></div>
+    </div>
+    <div class="sec">주로 활동하는 분야</div>
+    <div class="conds">
+      <span class="cond"><svg class="ic"><use href="#i-paw"/></svg>동물</span>
+      <span class="cond"><svg class="ic"><use href="#i-leaf"/></svg>환경</span>
+    </div>
+
+    <div class="sec">쓴 후기 4</div>
+    <div class="group">
+      <div class="rvcard" onclick="go('v-rv1')">
+        <div class="rvimg"><svg class="ic"><use href="#i-photo"/></svg><div class="n">3</div></div>
+        <div class="rvc">
+          <div class="tt">처음 가는 분께 드리는 후기</div>
+          <div class="ex">아이들이 정말 순해요. 선생님들이 하나하나 알려주셔서 어렵지 않았습니다.</div>
+          <div class="mt"><span>행복 유기견 보호소</span>·<span>8월 2일</span></div>
+        </div>
+      </div>
+      <div class="rvcard" onclick="go('v-rv1')">
+        <div class="rvimg" style="background:#EAF3DE;color:#3B6D11"><svg class="ic"><use href="#i-photo"/></svg><div class="n">2</div></div>
+        <div class="rvc">
+          <div class="tt">한강 쓰레기 줍기 다녀왔어요</div>
+          <div class="ex">집게와 봉투는 다 주십니다. 장갑만 챙기면 됩니다.</div>
+          <div class="mt"><span>한강 지킴이</span>·<span>6월 14일</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">본인이 정한 닉네임입니다. 어느 센터에 언제 갔는지는 공개되지 않습니다.</div>
+  </div>
+  <div class="nav">
+    <div class="on"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div onclick="navGo('v-my')"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div onclick="navGo('c-dash')"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+</div>
+
+<!-- ============ B5 후기 쓰기 ============ -->
+<div class="scr" id="v-review">
+  <div class="hd plain"><svg class="ic" onclick="goBack('v-my')"><use href="#i-back"/></svg><h1>후기 쓰기</h1><span class="act" onclick="go('v-center')">등록</span></div>
+  <div class="body">
+    <div class="box" style="margin-top:16px">
+      <div class="kv"><span>센터</span><span>행복 유기견 보호소</span></div>
+      <div class="kv" style="border:none"><span>봉사일</span><span>8월 8일 (금) 10:00</span></div>
+    </div>
+    <div class="field" style="margin-top:22px"><label>제목</label>
+      <input placeholder="처음 가는 분께 드리는 후기">
+    </div>
+    <div class="field"><label>사진</label>
+      <div style="display:flex;gap:9px">
+        <div style="width:78px;height:78px;border-radius:12px;border:1.5px dashed var(--bd2);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--mu);cursor:pointer;gap:3px">
+          <svg class="ic" style="font-size:21px"><use href="#i-photo"/></svg><span style="font-size:11px">0 / 5</span>
+        </div>
+      </div>
+      <div class="hint">사진이 있는 후기가 훨씬 많이 읽힙니다. 사람 얼굴이 나오면 동의를 받아주세요.</div>
+    </div>
+    <div class="field"><label>내용</label>
+      <textarea style="min-height:170px" placeholder="다른 봉사자에게 도움이 될 후기를 남겨주세요.
+
+예) 처음 가는 분은 편한 옷과 운동화를 꼭 챙기세요. 주차가 어려워서 버스로 갔습니다. 선생님들이 친절하게 알려주셔서 어렵지 않았어요."></textarea>
+      <div class="hint">센터 페이지에 이름과 함께 공개됩니다. 별점은 없습니다.</div>
+    </div>
+    <div class="foot">후기는 선택입니다. 안 써도 참석 기록은 남습니다.</div>
+  </div>
+  <div class="cta">
+    <div class="two">
+      <button class="btn btn-o" onclick="go('v-my')">다음에</button>
+      <button class="btn btn-p" onclick="go('v-center')">후기 등록</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ B4 내 봉사 ============ -->
+<div class="scr" id="v-my">
+  <div class="hd root"><h1>내 봉사</h1></div>
+  <div class="seg">
+    <div class="on" onclick="myTab(this,'up')">다가오는 3</div>
+    <div onclick="myTab(this,'past')">지난 봉사 13 <span class="segdot">1</span></div>
+  </div>
+  <div class="body">
+    <div class="att urg">
+      <div class="dday">내일까지</div>
+      <div class="h">참석 확인이 하나 남았어요</div>
+      <div class="d">8월 8일 (금) · 행복 유기견 보호소<br>8월 11일이 지나면 확인할 수 없습니다.</div>
+      <button class="btn btn-p" onclick="confirmAttend()">참석 확인하기</button>
+    </div>
+
+    <div id="my-up">
+      <!-- 센터 사정으로 취소된 건은 지우지 않고 맨 위에 남깁니다.
+           1차에는 알림이 없어서, 이 카드를 못 보면 모르고 현장에 갑니다. -->
+      <div class="ban" style="margin-top:8px">
+        <div class="l">센터 사정으로 취소됨</div>
+        <div class="c"><b>8월 29일 (토) 10:00 · 행복 유기견 보호소</b><br>사유 · 시설 점검<br>이날은 봉사가 열리지 않습니다. 다른 날짜를 골라주세요.</div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn btn-o" style="font-size:13.5px;padding:11px" onclick="go('v-center')">다른 날짜 보기</button>
+          <button class="btn btn-o" style="font-size:13.5px;padding:11px" onclick="modal({title:'확인했습니다',ok:'닫기',cancel:false,body:note('이 안내가 목록에서 사라집니다.')})">확인했어요</button>
+        </div>
+      </div>
+
+      <div class="group" style="margin-top:8px">
+        <div class="row" onclick="go('v-up')">
+          <div class="thumb"><svg class="ic"><use href="#i-paw"/></svg></div>
+          <div class="g"><div class="t">8월 15일 (토) 10:00</div><div class="s">행복 유기견 보호소 · 센터 정문 앞</div></div>
+          <span class="badge b-ok">D-7</span>
+        </div>
+        <div class="row" onclick="go('v-up')">
+          <div class="thumb" style="background:#EAF3DE;color:#3B6D11"><svg class="ic"><use href="#i-leaf"/></svg></div>
+          <div class="g"><div class="t">8월 20일 (목) 14:00</div><div class="s">한강 지킴이 · 마포구</div></div>
+          <span class="badge b-off">D-12</span>
+        </div>
+        <div class="row" onclick="go('v-up')">
+          <div class="thumb" style="background:#EAF3DE;color:#3B6D11"><svg class="ic"><use href="#i-leaf"/></svg></div>
+          <div class="g"><div class="t">8월 23일 (일) 09:00</div><div class="s">한강 지킴이 · 마포구</div></div>
+          <span class="badge b-off">D-15</span>
+        </div>
+      </div>
+      <div class="foot">봉사를 누르면 장소·준비물과 취소 버튼이 나옵니다.</div>
+    </div>
+
+    <div id="my-past" style="display:none">
+      <div class="group" style="margin-top:8px">
+        <div class="row" style="cursor:default">
+          <div class="thumb"><svg class="ic"><use href="#i-paw"/></svg></div>
+          <div class="g"><div class="t">8월 8일 (금)</div><div class="s" style="color:var(--wn)">내일까지 확인해 주세요</div></div>
+          <button class="mini" onclick="confirmAttend()">참석 확인</button>
+        </div>
+        <div class="row" onclick="go('v-hist')">
+          <div class="thumb" style="background:var(--page);color:var(--mu)"><svg class="ic"><use href="#i-paw"/></svg></div>
+          <div class="g"><div class="t">7월 26일 (토)</div><div class="s">행복 유기견 보호소 · 후기 작성함</div></div>
+          <span class="badge b-ok">참석 완료</span>
+        </div>
+        <div class="row" onclick="go('v-hist')">
+          <div class="thumb" style="background:var(--page);color:var(--mu)"><svg class="ic"><use href="#i-leaf"/></svg></div>
+          <div class="g"><div class="t">7월 19일 (토)</div><div class="s">한강 지킴이 · 3일이 지나 확인 기간이 만료됐습니다</div></div>
+          <span class="badge b-off">기간 만료</span>
+        </div>
+        <div class="row" onclick="go('v-hist')">
+          <div class="thumb" style="background:var(--page);color:var(--mu)"><svg class="ic"><use href="#i-paw"/></svg></div>
+          <div class="g"><div class="t">7월 12일 (토)</div><div class="s">행복 유기견 보호소</div></div>
+          <span class="badge b-ok">참석 완료</span>
+        </div>
+      </div>
+      <div class="foot"><b>봉사 후 3일 안에</b> 참석 확인을 눌러주세요.<br>센터가 몇 분이 오셨는지 알 수 있는 유일한 방법입니다.</div>
+    </div>
+  </div>
+  <div class="nav">
+    <div onclick="go('v-list')"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div class="on"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div onclick="navGo('c-dash')"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+</div>
+
+<!-- ============ B4-2 다가오는 봉사 상세 ============
+     v1.6에서 새로 만들었습니다. 취소하기 버튼이 어느 화면에도 붙어 있지 않아
+     봉사자가 신청을 취소할 방법이 아예 없었습니다.                          -->
+<div class="scr" id="v-up">
+  <div class="hd plain"><svg class="ic" onclick="goBack('v-my')"><use href="#i-back"/></svg><h1>8월 15일 (토)<span class="sub">행복 유기견 보호소</span></h1></div>
+  <div class="body">
+    <div class="att">
+      <div class="h">신청이 확정됐어요</div>
+      <div class="d">8월 15일 (토) 10:00 – 13:00<br>센터 정문 앞에서 만나요. <b>D-7</b></div>
+    </div>
+
+
+    <div class="box">
+      <div class="kv"><span>센터</span><span>행복 유기견 보호소</span></div>
+      <div class="kv"><span>장소</span><span>센터 정문 앞</span></div>
+      <div class="kv"><span>센터 연락처</span><span><a href="tel:0212345678" style="color:var(--ok);font-weight:600;text-decoration:none">02-1234-5678</a></span></div>
+      <div class="kv" style="border:none"><span>현재 신청 인원</span><span>6 / 8명</span></div>
+    </div>
+
+    <div class="sec">가기 전에 확인하세요</div>
+    <div class="conds">
+      <span class="cond imp"><svg class="ic"><use href="#i-alert"/></svg>만 14세 이상</span>
+      <span class="cond"><svg class="ic"><use href="#i-check"/></svg>실외 활동</span>
+      <span class="cond"><svg class="ic"><use href="#i-check"/></svg>동물과 접촉</span>
+      <span class="cond"><svg class="ic"><use href="#i-check"/></svg>주차 불가</span>
+    </div>
+    <div class="bring" style="margin-top:12px"><div class="ib"><svg class="ic"><use href="#i-bag"/></svg></div><div class="l">준비물</div><div class="v">긴바지 · 운동화 · 개인 물병</div></div>
+
+    <div style="padding:22px 17px 4px"><div class="two">
+      <button class="btn btn-o" onclick="go('v-center')">센터 보기</button>
+      <button class="btn btn-d" onclick="cancelApply('8월 15일 (토) 10:00','행복 유기견 보호소',false)">봉사 취소하기</button>
+    </div></div>
+    <div class="foot">못 가게 되면 미리 취소해 주세요. <b>취소에 불이익은 없습니다.</b></div>
+    <div class="devnote"><b>시안 확인용</b> · <a onclick="cancelApply('내일 · 8월 10일 (월) 10:00','행복 유기견 보호소',true)">하루 전에 취소하면 문구가 어떻게 달라지는지</a></div>
+  </div>
+  <div class="nav">
+    <div onclick="go('v-list')"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div class="on"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div onclick="navGo('c-dash')"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+</div>
+
+<!-- ⚠ 개발 지침 · v-up 과 v-hist 도 «한 화면 + 상태»입니다
+       다가오는  →  센터 연락처 · 준비물 · [봉사 취소하기]
+       지난       →  참석 결과 · 내가 쓴 후기 · [다시 신청하기]
+     헤더·기본 정보·조건 뱃지는 동일합니다.
+ ============ B4-1 봉사 상세 (내 기록) ============ -->
+<div class="scr" id="v-hist">
+  <div class="hd plain"><svg class="ic" onclick="goBack('v-my')"><use href="#i-back"/></svg><h1>7월 26일 (토)<span class="sub">행복 유기견 보호소</span></h1></div>
+  <div class="body">
+    <div class="center" style="padding:34px 34px 26px">
+      <div class="circle"><svg class="ic"><use href="#i-check"/></svg></div>
+      <div style="font-size:19px;font-weight:700;letter-spacing:-.03em">참석 확인 완료</div>
+      <div style="font-size:14px;color:var(--tx2);margin-top:8px">7월 26일 오후에 직접 확인하셨어요</div>
+    </div>
+
+    <div class="box">
+      <div class="kv"><span>센터</span><span>행복 유기견 보호소</span></div>
+      <div class="kv"><span>날짜</span><span>7월 26일 (토)</span></div>
+      <div class="kv"><span>시간</span><span>10:00 – 13:00</span></div>
+      <div class="kv"><span>장소</span><span>센터 정문 앞</span></div>
+      <div class="kv" style="border:none"><span>그날 참여 인원</span><span>6명</span></div>
+    </div>
+
+    <div class="sec">그날 확인했던 내용</div>
+    <div class="conds">
+      <span class="cond imp"><svg class="ic"><use href="#i-alert"/></svg>만 14세 이상</span>
+      <span class="cond"><svg class="ic"><use href="#i-check"/></svg>실외 활동</span>
+      <span class="cond"><svg class="ic"><use href="#i-check"/></svg>동물과 접촉</span>
+    </div>
+    <div class="bring" style="margin-top:12px"><div class="ib"><svg class="ic"><use href="#i-bag"/></svg></div><div class="l">준비물</div><div class="v">긴바지 · 운동화 · 개인 물병</div></div>
+
+    <div class="sec">내가 쓴 후기</div>
+    <div class="group">
+      <div class="rvcard" onclick="go('v-rv1')">
+        <div class="rvimg"><svg class="ic"><use href="#i-photo"/></svg><div class="n">3</div></div>
+        <div class="rvc">
+          <div class="tt">처음 가는 분께 드리는 후기</div>
+          <div class="ex">아이들이 정말 순해요. 선생님들이 하나하나 알려주셔서 어렵지 않았습니다.</div>
+          <div class="mt"><span>8월 2일 작성</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:22px 17px 4px"><div class="two">
+      <button class="btn btn-o" onclick="go('v-center')">센터 보기</button>
+      <button class="btn btn-p" onclick="go('v-center')">다시 신청하기</button>
+    </div></div>
+
+  </div>
+  <div class="nav">
+    <div onclick="go('v-list')"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div class="on"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div onclick="navGo('c-dash')"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+</div>
+
+<!-- ============ B6 내 정보 ============ -->
+<div class="scr" id="v-profile">
+  <div class="hd root"><h1>내 정보</h1><svg class="ic" style="font-size:23px;color:var(--tx2);margin-top:4px"><use href="#i-set"/></svg></div>
+  <div class="body">
+    <div class="box" style="display:flex;align-items:center;gap:15px;margin-top:4px">
+      <div class="pfp s76 pfpedit" onclick="editPfp()">김*<div class="cam"><svg class="ic"><use href="#i-photo"/></svg></div></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:19px;font-weight:700;letter-spacing:-.025em">뭉치엄마</div>
+        <div style="font-size:13.5px;color:var(--tx2);margin-top:3px">김*연 <span style="color:var(--mu)">· 이름은 바꿀 수 없어요</span></div>
+        <div style="font-size:13.5px;color:var(--ok);font-weight:600;margin-top:9px;cursor:pointer" onclick="editNick()">닉네임 변경 ›</div>
+      </div>
+    </div>
+    <div class="foot" style="padding:10px 20px 0">이름은 봉사 당일 확인용이라 바꿀 수 없고, 항상 가려서 보입니다.</div>
+    <div class="stat" style="margin-top:10px">
+      <div style="cursor:pointer" onclick="go('v-my')"><div class="n">13</div><div class="l">참석한 봉사</div></div>
+      <div style="cursor:pointer" onclick="go('v-my')"><div class="n">3</div><div class="l">예정된 봉사</div></div>
+      <div style="cursor:pointer" onclick="go('v-fav')"><div class="n">5</div><div class="l">함께한 센터</div></div>
+    </div>
+    <div class="foot" style="padding-top:12px">숫자를 누르면 해당 목록으로 갑니다.</div>
+
+    <div class="sec">찜한 센터 4<span class="more" onclick="go('v-fav')">전체 ›</span></div>
+    <div class="group">
+      <div class="row" onclick="go('v-center')">
+        <div class="thumb" style="background:#E6F1FB;color:#185FA5"><svg class="ic"><use href="#i-book"/></svg></div>
+        <div class="g"><div class="t">푸른꿈 지역아동센터</div><div class="s">강북구 · 매주 토</div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+      <div class="row" onclick="go('v-center')">
+        <div class="thumb" style="background:#FBF1DE;color:#8A5A05"><svg class="ic"><use href="#i-heart"/></svg></div>
+        <div class="g"><div class="t">늘봄 어르신 돌봄센터</div><div class="s" style="color:var(--mu)">현재 모집 없음</div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+    </div>
+
+    <div class="sec">내가 관리하는 센터</div>
+    <div class="group">
+      <div class="row" onclick="go('c-dash')">
+        <div class="thumb"><svg class="ic"><use href="#i-paw"/></svg></div>
+        <div class="g"><div class="t">행복 유기견 보호소</div><div class="s">소유자 · 이번 주 회차 2개</div></div>
+        <svg class="ic ch" onclick="event.stopPropagation();leaveCenter('행복 유기견 보호소',true)"><use href="#i-more"/></svg>
+      </div>
+      <div class="row" onclick="go('c-dash')">
+        <div class="thumb" style="background:#EAF3DE;color:#3B6D11"><svg class="ic"><use href="#i-leaf"/></svg></div>
+        <div class="g"><div class="t">한강 지킴이</div><div class="s">담당자 · 이번 주 회차 1개</div></div>
+        <svg class="ic ch" onclick="event.stopPropagation();leaveCenter('한강 지킴이',false)"><use href="#i-more"/></svg>
+      </div>
+      <div class="row" onclick="centerEntry()">
+        <div class="thumb" style="background:var(--page);color:var(--tx2)"><svg class="ic"><use href="#i-plus"/></svg></div>
+        <div class="g"><div class="t" style="color:var(--tx2)">센터 추가하기</div><div class="s">새로 등록하거나, 기존 센터에 합류 요청</div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+    </div>
+    <div class="foot"><b>⋯</b>을 누르면 센터에서 나갈 수 있습니다.</div>
+
+    <div class="sec">계정</div>
+    <div class="group">
+      <div class="row" onclick="editNick()"><div class="g"><div class="t">닉네임 변경</div><div class="s">뭉치엄마</div></div><svg class="ic ch"><use href="#i-right"/></svg></div>
+      <div class="row"><div class="g"><div class="t">내가 쓴 후기</div></div><svg class="ic ch"><use href="#i-right"/></svg></div>
+      <div class="row" onclick="policy()"><div class="g"><div class="t">약관과 개인정보</div><div class="s">봉사모아가 하는 일 · 수집하는 정보</div></div><svg class="ic ch"><use href="#i-right"/></svg></div>
+      <div class="row" onclick="contactAdmin()"><div class="g"><div class="t">문의·신고</div><div class="s">사고, 센터와의 문제, 그 밖의 문의</div></div><svg class="ic ch"><use href="#i-right"/></svg></div>
+      <div class="row"><div class="g"><div class="t" style="color:var(--tx2)">로그아웃</div></div></div>
+    </div>
+  </div>
+  <div class="nav">
+    <div onclick="go('v-list')"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div onclick="navGo('v-my')"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div onclick="navGo('c-dash')"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div class="on"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+</div>
+
+<!-- ============ B7 찜한 센터 ============ -->
+<div class="scr" id="v-fav">
+  <div class="hd plain"><svg class="ic" onclick="goBack('v-profile')"><use href="#i-back"/></svg><h1>찜한 센터<span class="sub">4곳</span></h1></div>
+  <div class="body">
+    <div class="group" style="margin-top:16px">
+      <div class="crow" onclick="go('v-center')">
+        <div class="tl" style="background:#E6F1FB;color:#185FA5"><svg class="ic"><use href="#i-book"/></svg></div>
+        <div class="cinfo">
+          <div class="nm">푸른꿈 지역아동센터</div>
+          <div class="mt">서울 강북구 · 아동·청소년</div>
+          <div><span class="nxt">신청 가능한 날 6일</span></div>
+        </div>
+      </div>
+      <div class="crow" onclick="go('v-center')">
+        <div class="tl"><svg class="ic"><use href="#i-paw"/></svg></div>
+        <div class="cinfo">
+          <div class="nm">행복 유기견 보호소</div>
+          <div class="mt">서울 은평구 · 동물</div>
+          <div><span class="nxt">신청 가능한 날 11일</span></div>
+        </div>
+      </div>
+      <div class="crow" onclick="go('v-center')">
+        <div class="tl" style="background:#EAF3DE;color:#3B6D11"><svg class="ic"><use href="#i-leaf"/></svg></div>
+        <div class="cinfo">
+          <div class="nm">한강 지킴이</div>
+          <div class="mt">서울 마포구 · 환경</div>
+          <div><span class="nxt">신청 가능한 날 3일</span></div>
+        </div>
+      </div>
+      <div class="crow" onclick="go('v-center')">
+        <div class="tl" style="background:#F1F1EE;color:var(--mu)"><svg class="ic"><use href="#i-heart"/></svg></div>
+        <div class="cinfo">
+          <div class="nm">늘봄 어르신 돌봄센터</div>
+          <div class="mt">서울 성북구 · 어르신</div>
+          <div><span class="nxt none">현재 모집 없음</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">찜해두면 새 일정이 열렸을 때 여기서 바로 확인할 수 있습니다.</div>
+  </div>
+  <div class="nav">
+    <div onclick="go('v-list')"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div onclick="navGo('v-my')"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div onclick="navGo('c-dash')"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div class="on"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+</div>
+
+<!-- ============ A3 센터 홈 ============ -->
+<div class="scr" id="c-dash">
+  <div class="hd root">
+    <h1 onclick="openSheet('sheetC')" style="cursor:pointer">행복 유기견 보호소<svg class="ic" style="font-size:21px;color:var(--tx2)"><use href="#i-down"/></svg></h1>
+  </div>
+  <div class="rsub">서울 은평구 · 소유자 · 이번 달 회차 6개</div>
+  <div class="body">
+    <div class="sec" style="padding-top:18px">다가오는 회차<span class="more" onclick="go('c-sessions')">전체 14개 ›</span></div>
+    <div class="group">
+      <div class="row" onclick="go('c-session')">
+        <div class="g"><div class="t">8월 15일 (토) 10:00 <span style="font-size:11.5px;color:var(--pri);font-weight:700">D-7</span></div><div class="s">센터 정문 앞 · 명단 보기</div></div>
+        <span class="badge b-ok">6 / 8명</span>
+      </div>
+      <div class="row" onclick="go('c-session')">
+        <div class="g"><div class="t">8월 16일 (일) 10:00</div><div class="s">센터 정문 앞 · 명단 보기</div></div>
+        <span class="badge b-off">8 / 8명</span>
+      </div>
+      <div class="row" onclick="go('c-session')">
+        <div class="g"><div class="t">8월 22일 (토) 10:00</div><div class="s">센터 정문 앞 · 명단 보기</div></div>
+        <span class="badge b-off">8 / 8명</span>
+      </div>
+      <div class="addrow" onclick="go('c-sched')">
+        <svg class="ic"><use href="#i-plus"/></svg>새 일정 등록
+      </div>
+    </div>
+    <div class="foot">일정을 등록하면 기간 안의 회차가 한 번에 만들어집니다.</div>
+
+    <div class="sec">센터 관리</div>
+    <div class="group">
+      <div class="row" onclick="go('c-info')"><div class="thumb"><svg class="ic"><use href="#i-edit"/></svg></div><div class="g"><div class="t">센터 정보</div><div class="s">대표 이미지 · 소개 · 확인 사항</div></div><svg class="ic ch"><use href="#i-right"/></svg></div>
+      <div class="row" onclick="go('c-reviews')"><div class="thumb"><svg class="ic"><use href="#i-book"/></svg></div><div class="g"><div class="t">받은 후기</div><div class="s">12개 · 새 후기 2개</div></div><svg class="ic ch"><use href="#i-right"/></svg></div>
+      <div class="row" onclick="go('c-members')"><div class="thumb"><svg class="ic"><use href="#i-usercog"/></svg></div><div class="g"><div class="t">관리자 관리</div><div class="s">담당자 2명 · <span style="color:var(--dg)">요청 2건</span></div></div><svg class="ic ch"><use href="#i-right"/></svg></div>
+    </div>
+    <div class="foot">‘찾기’를 누르면 봉사자로 돌아갑니다.</div>
+  </div>
+  <div class="nav">
+    <div onclick="go('v-list')"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div onclick="navGo('v-my')"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div class="on"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+
+  <div id="sheetC" class="dim" style="display:none" onclick="if(event.target===this)closeSheet('sheetC')">
+    <div class="sheet">
+      <div class="grip"></div>
+      <h3>센터 바꾸기</h3>
+      <div class="group" style="margin:0 0 4px">
+        <div class="row" onclick="closeSheet('sheetC')">
+          <div class="thumb"><svg class="ic"><use href="#i-paw"/></svg></div>
+          <div class="g"><div class="t">행복 유기견 보호소</div><div class="s">소유자 · 회차 6개</div></div>
+          <svg class="ic" style="font-size:20px;color:var(--pri)"><use href="#i-check"/></svg>
+        </div>
+        <div class="row" onclick="closeSheet('sheetC')">
+          <div class="thumb" style="background:#EAF3DE;color:#3B6D11"><svg class="ic"><use href="#i-leaf"/></svg></div>
+          <div class="g"><div class="t">한강 지킴이</div><div class="s">담당자 · 회차 3개</div></div>
+        </div>
+        <div class="row" onclick="closeSheet('sheetC')">
+          <div class="thumb" style="background:#FBF1DE;color:#8A5A05"><svg class="ic"><use href="#i-heart"/></svg></div>
+          <div class="g"><div class="t">늘봄 어르신 돌봄센터</div><div class="s" style="color:var(--wn)">승인 대기 중</div></div>
+        </div>
+  
+      </div>
+      <div class="hint" style="padding:0 4px">센터마다 권한이 다릅니다. 담당자는 일정과 명단만, 소유자는 센터 정보와 관리자까지 다룰 수 있습니다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ A5 일정 등록 ============ -->
+<div class="scr" id="c-sched">
+  <div class="hd plain"><svg class="ic" onclick="goBack('c-dash')"><use href="#i-back"/></svg><h1>일정 등록</h1></div>
+  <div class="body">
+    <div class="field" style="margin-top:18px"><label>일정 이름<em>*</em></label>
+      <input value="2026년 상반기 정기봉사"><div class="hint">관리용 이름입니다. 봉사자에게는 보이지 않습니다.</div>
+    </div>
+    <div class="field"><label>반복 기간<em>*</em></label>
+      <div class="two"><input type="date" value="2026-01-02"><input type="date" value="2026-02-03"></div>
+      <div class="hint">최대 1년까지 설정할 수 있습니다.</div>
+    </div>
+    <div class="field"><label>반복 요일<em>*</em></label>
+      <div class="days">
+        <div class="day" onclick="toggleDay(this)">일</div><div class="day on" onclick="toggleDay(this)">월</div>
+        <div class="day on" onclick="toggleDay(this)">화</div><div class="day on" onclick="toggleDay(this)">수</div>
+        <div class="day" onclick="toggleDay(this)">목</div><div class="day" onclick="toggleDay(this)">금</div>
+        <div class="day" onclick="toggleDay(this)">토</div>
+      </div>
+    </div>
+    <div class="field"><label>시간<em>*</em></label>
+      <div class="two"><input type="time" value="10:00"><input type="time" value="17:00"></div>
+    </div>
+    <div class="field"><label>회차당 정원<em>*</em></label><input type="number" value="8"></div>
+    <div class="field"><label>집합 장소<em>*</em></label><input placeholder="센터 정문 앞"></div>
+    <div class="field"><label>신청 오픈</label>
+      <select><option>봉사일 14일 전부터</option><option>봉사일 7일 전부터</option><option>봉사일 30일 전부터</option></select>
+    </div>
+    <div class="ban">
+      <div class="l">비슷한 일정이 이미 있어요</div>
+      <div class="c"><b>최*진</b> 님이 만든 ‘2026년 상반기 정기봉사’가 같은 요일·시간대에 있습니다.<br>같은 날 회차가 두 개 생기면 봉사자가 헷갈립니다. 기존 일정을 수정하는 게 나을 수 있어요.</div>
+      <button class="btn btn-o" style="margin-top:12px;padding:11px;font-size:14px" onclick="go('c-sessions')">기존 일정 보기</button>
+    </div>
+    <div class="ban g">
+      <div class="l">회차 14개가 만들어집니다</div>
+      <div class="c">1/5(월) · 1/6(화) · 1/7(수) · 1/12(월) … 2/3(화)<br>시작일 1/2는 금요일이라 제외됩니다.</div>
+    </div>
+  </div>
+  <div class="cta"><button class="btn btn-p" onclick="go('c-sessions')">일정 저장하고 회차 만들기</button></div>
+</div>
+
+<!-- ============ A6 회차 목록 ============ -->
+<div class="scr" id="c-sessions">
+  <div class="hd plain"><svg class="ic" onclick="goBack('c-dash')"><use href="#i-back"/></svg><h1>회차 목록<span class="sub">2026년 상반기 정기봉사 · 14개</span></h1></div>
+  <div class="seg">
+    <div onclick="seg(this)">1월</div><div class="on" onclick="seg(this)">2월</div><div onclick="seg(this)">3월</div>
+  </div>
+  <div class="body">
+    <div class="ban g" style="margin-top:16px">
+      <div class="l">최*진 님이 만든 일정</div>
+      <div class="c">8월 6일 등록 · 마지막 수정 8월 7일 (권*재)<br>담당자 누구나 회차를 고치거나 휴무 처리할 수 있습니다.</div>
+    </div>
+    <div class="group">
+      <div class="row" onclick="go('c-session')">
+        <div class="g"><div class="t">2월 2일 (월) 10:00–17:00</div><div class="s">센터 정문 앞</div></div>
+        <span class="badge b-ok">6 / 8명</span>
+      </div>
+      <div class="row" onclick="go('c-session')">
+        <div class="g"><div class="t">2월 3일 (화) 10:00–17:00</div><div class="s">센터 정문 앞</div></div>
+        <span class="badge b-off">8 / 8명</span>
+      </div>
+      <div class="row off">
+        <div class="g"><div class="t" style="text-decoration:line-through">1월 26일 (월)</div><div class="s">시설 점검</div></div>
+        <span class="badge b-dg">휴무</span>
+      </div>
+      <div class="row" onclick="go('c-session')">
+        <div class="g"><div class="t">1월 27일 (화) 10:00–17:00</div><div class="s">정원 5명으로 조정됨</div></div>
+        <span class="badge b-ok">3 / 5명</span>
+      </div>
+    </div>
+    <div class="foot">회차를 눌러 정원과 휴무를 바꿉니다.<br>일정을 수정해도 <b>신청자가 있는 회차는 그대로</b> 둡니다.</div>
+  </div>
+  <div class="nav">
+    <div onclick="go('v-list')"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div onclick="navGo('v-my')"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div class="on"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+</div>
+
+<!-- ============ A7 회차 명단 ============ -->
+<div class="scr" id="c-session">
+  <div class="hd plain"><svg class="ic" onclick="goBack('c-dash')"><use href="#i-back"/></svg><h1>8월 15일 (토)<span class="sub">10:00 – 13:00 · 센터 정문 앞</span></h1><span class="act" onclick="addManual()">+ 직접 추가</span></div>
+  <div class="body">
+    <div class="stat" style="margin-top:16px">
+      <div><div class="n">6 / 8</div><div class="l">신청</div></div>
+      <div><div class="n">2</div><div class="l">남은 자리</div></div>
+      <div><div class="n">D-7</div><div class="l">봉사까지</div></div>
+    </div>
+    <div class="two" style="padding:12px 16px 0">
+      <button class="btn btn-o" style="font-size:14px;padding:12px" onclick="changeCap()">정원 바꾸기</button>
+      <button class="btn btn-d" style="font-size:14px;padding:12px" onclick="closeSession()">이 회차 휴무</button>
+    </div>
+
+    <div class="sec">신청자 6명<span class="more" onclick="addManual()">+ 직접 추가</span></div>
+    <div class="group">
+      <div class="row" onclick="applicant('김*연','뭉치엄마','self')">
+        <div class="pfp s44">김*</div>
+        <div class="g"><div class="t">김*연 <span class="nick">뭉치엄마</span></div><div class="s">이 센터 12번째 참여</div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+      <div class="row" onclick="applicant('박*호','준호','self')">
+        <div class="pfp s44">박*</div>
+        <div class="g"><div class="t">박*호 <span class="nick">준호</span></div><div class="s">첫 참여</div></div>
+        <span class="badge b-ok">첫 참여</span>
+      </div>
+      <div class="row" onclick="applicant('이*지','민지민지','self')">
+        <div class="pfp s44">이*</div>
+        <div class="g"><div class="t">이*지 <span class="nick">민지민지</span></div><div class="s">참석 8회 · <span style="color:var(--tx2)">기간 만료 2회</span></div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+      <div class="row" onclick="applicant('정*늘','하늘','self')">
+        <div class="pfp s44">정*</div>
+        <div class="g"><div class="t">정*늘 <span class="nick">하늘</span></div><div class="s">참석 3회</div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+      <div class="row" onclick="applicant('한*름','','manual')">
+        <div class="pfp s44" style="background:var(--page);color:var(--mu)"><svg class="ic"><use href="#i-user"/></svg></div>
+        <div class="g"><div class="t">한*름</div><div class="s">계정 없음 · 권*재 님이 추가</div></div>
+        <span class="badge b-wn">직접 추가</span>
+      </div>
+      <div class="addrow" onclick="addManual()"><svg class="ic"><use href="#i-plus"/></svg>신청자 직접 추가</div>
+    </div>
+
+    <div class="foot">이름을 누르면 상세와 명단 제외가 나옵니다.<br>참석 여부는 봉사가 끝난 뒤 봉사자가 직접 확인합니다.</div>
+  </div>
+  <div class="nav">
+    <div onclick="go('v-list')"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div onclick="navGo('v-my')"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div class="on"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+</div>
+
+<!-- ⚠ 개발 지침 · c-session 과 c-past 는 «한 화면 + 날짜 비교»입니다
+       session_date >= 오늘  →  정원 조정·휴무·직접 추가 버튼을 보여줌
+       session_date <  오늘  →  버튼 없이 참석 집계만 보여줌
+     명단 행 컴포넌트는 완전히 같습니다.
+ ============ A7-1 지난 회차 명단 ============ -->
+<div class="scr" id="c-past">
+  <div class="hd plain"><svg class="ic" onclick="goBack('c-sessions')"><use href="#i-back"/></svg><h1>7월 26일 (토)<span class="sub">지난 봉사 · 10:00 – 13:00</span></h1></div>
+  <div class="body">
+    <div class="stat" style="margin-top:16px">
+      <div><div class="n">6</div><div class="l">신청</div></div>
+      <div><div class="n">4</div><div class="l">참석 확인</div></div>
+      <div><div class="n">2</div><div class="l">기간 만료</div></div>
+    </div>
+    <div class="sec">참여자 6명</div>
+    <div class="group">
+      <div class="row" style="cursor:default">
+        <div class="pfp s44">김*</div>
+        <div class="g"><div class="t">김*연</div><div class="s">후기 작성함</div></div>
+        <span class="badge b-ok">참석 확인</span>
+      </div>
+      <div class="row" style="cursor:default">
+        <div class="pfp s44">박*</div>
+        <div class="g"><div class="t">박*호</div><div class="s">첫 참여였어요</div></div>
+        <span class="badge b-ok">참석 확인</span>
+      </div>
+      <div class="row" style="cursor:default">
+        <div class="pfp s44">이*</div>
+        <div class="g"><div class="t">이*지</div><div class="s"><span style="color:var(--tx2)">기간 만료 2회</span></div></div>
+        <span class="badge b-off">기간 만료</span>
+      </div>
+      <div class="row" style="cursor:default">
+        <div class="pfp s44">정*</div>
+        <div class="g"><div class="t">정*늘</div><div class="s">참석 3회</div></div>
+        <span class="badge b-off">기간 만료</span>
+      </div>
+    </div>
+    <div class="ban g">
+      <div class="l">센터가 출석을 체크하실 필요가 없습니다</div>
+      <div class="c">봉사자가 봉사 후 3일 안에 직접 ‘참석 확인’을 누릅니다. 안 누르면 ‘기간 만료’로 기록만 남습니다.</div>
+    </div>
+    <div class="foot"><b>‘기간 만료’는 노쇼가 아닙니다.</b> 왔지만 버튼을 못 누른 분도 섞여 있습니다.</div>
+  </div>
+  <div class="nav">
+    <div onclick="go('v-list')"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div onclick="navGo('v-my')"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div class="on"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+</div>
+
+<!-- ============ A4 센터 정보 ============ -->
+<div class="scr" id="c-info">
+  <div class="hd plain"><svg class="ic" onclick="goBack('c-dash')"><use href="#i-back"/></svg><h1>센터 정보</h1><span class="act" onclick="go('c-dash')">저장</span></div>
+  <div class="body">
+    <div class="sec">대표 이미지</div>
+    <div style="padding:0 16px">
+      <div class="hero" style="border-radius:var(--r-c);height:160px"><svg class="ic"><use href="#i-photo"/></svg><div class="ph">눌러서 사진 올리기</div></div>
+      <div class="hint" style="padding:0 4px">사진이 없으면 분야에 맞는 기본 그림이 표시됩니다.</div>
+    </div>
+
+    <div class="sec">기본 정보</div>
+    <div class="field" style="margin-top:2px"><label>센터 이름<em>*</em></label><input value="행복 유기견 보호소"></div>
+    <div class="field"><label>봉사 분야<em>*</em></label>
+      <select><option>동물</option><option>환경</option><option>아동·청소년</option><option>어르신</option><option>장애인</option><option>기타</option></select>
+    </div>
+    <div class="field"><label>지역<em>*</em></label>
+      <div class="two"><select><option>서울</option><option>경기</option><option>인천</option></select><select><option>은평구</option><option>마포구</option><option>성북구</option></select></div>
+    </div>
+    <div class="field"><label>상세 주소<em>*</em></label><input value="응암로 123, 2층">
+      <div class="hint">봉사자가 <b>주소 복사</b>로 지도 앱에 붙여넣습니다. 건물명과 층까지 적어주세요.</div>
+    </div>
+    <div class="field"><label>대표 연락처<em>*</em></label><input value="02-1234-5678">
+      <div class="hint">센터 정보에 <b>누구나 볼 수 있게</b> 표시됩니다. 개인 휴대폰이라면 안심번호를 권합니다.</div>
+    </div>
+
+    <div class="sec">소개 글</div>
+    <div class="field" style="margin-top:2px"><label>센터 소개</label>
+      <textarea placeholder="우리 센터가 어떤 곳인지 소개해 주세요.
+
+예) 2015년부터 유기견 200여 마리를 보호해 온 사설 보호소입니다. 매주 정기 봉사자분들과 함께 아이들을 돌보고 있습니다."></textarea>
+    </div>
+    <div class="field"><label>봉사 안내</label>
+      <textarea placeholder="봉사자가 미리 알아야 할 내용을 적어주세요.
+
+예) 그날 필요한 일은 현장에서 안내드립니다. 첫 참여자는 10분 안전 교육 후 활동합니다."></textarea>
+      <div class="hint">일정이 바뀌는 등 <b>지금만 알릴 내용</b>도 여기에 함께 적으세요. 공지 칸을 따로 두면 어디에 써야 할지 헷갈립니다.</div>
+    </div>
+
+    <div class="sec">가기 전에 확인할 것</div>
+    <div class="sub2">아래 네 가지만 정하시면 됩니다. 봉사자는 신청 전에 이 내용을 반드시 확인하게 됩니다.</div>
+
+    <div style="padding:14px 20px 9px;font-size:14px;font-weight:600">1. 나이 제한</div>
+    <div class="pick">
+      <div onclick="pickOne(this)">누구나</div>
+      <div class="on" onclick="pickOne(this)">14세 이상</div>
+      <div onclick="pickOne(this)">19세 이상</div>
+      <div onclick="pickOne(this)">보호자 동행</div>
+    </div>
+
+    <div style="padding:22px 20px 4px;font-size:14px;font-weight:600">2. 어떤 활동인가요</div>
+    <div class="sub2" style="margin-top:0">분야를 ‘동물’로 고르셔서 자주 쓰는 항목을 미리 켜뒀습니다.</div>
+    <div class="tog">
+      <div class="on" onclick="tog(this)"><svg class="ic"><use href="#i-check"/></svg>실외 활동</div>
+      <div class="on" onclick="tog(this)"><svg class="ic"><use href="#i-check"/></svg>동물과 접촉</div>
+      <div onclick="tog(this)"><svg class="ic"><use href="#i-check"/></svg>무거운 물건</div>
+      <div onclick="tog(this)"><svg class="ic"><use href="#i-check"/></svg>사전 교육 필요</div>
+    </div>
+
+    <div class="field" style="margin-top:26px"><label>3. 준비물 · 봉사자가 직접 챙겨올 것</label>
+      <input value="긴바지, 운동화, 개인 물병" placeholder="긴바지, 운동화, 개인 물병">
+      <div class="hint">봉사자 화면에 노란 카드로 크게 보입니다. 센터에서 준비해 주는 물품은 적지 마세요. 없으면 비워두세요.</div>
+    </div>
+
+    <div style="padding:0 20px 9px;font-size:14px;font-weight:600">4. 주차</div>
+    <div class="pick wide">
+      <div onclick="pickOne(this)">주차 가능</div>
+      <div class="on" onclick="pickOne(this)">주차 불가</div>
+    </div>
+
+    <div class="sec">봉사자 보험</div>
+    <div class="sub2">가입돼 있다면 꼭 알려주세요. 봉사자가 <b>가장 궁금해하는 것</b> 중 하나입니다.</div>
+    <div class="pick wide">
+      <div class="on" onclick="pickOne(this)">가입 안 됨</div>
+      <div onclick="pickOne(this)">가입돼 있음</div>
+    </div>
+    <div class="hint" style="padding:10px 20px 0">‘가입돼 있음’을 고르면 센터 정보에 <b>초록색으로 표시</b>됩니다. 없다고 해서 불리하지 않습니다 — 대부분의 개인 센터가 그렇습니다.</div>
+
+    <div class="foot">그 밖에 알릴 내용은 <b>봉사 안내</b>에 자유롭게 적으세요.</div>
+  </div>
+  <div class="cta"><button class="btn btn-p" onclick="go('c-dash')">저장하기</button></div>
+</div>
+
+<!-- ============ A8 관리자 관리 ============ -->
+<div class="scr" id="c-members">
+  <div class="hd plain"><svg class="ic" onclick="goBack('c-dash')"><use href="#i-back"/></svg><h1>관리자 관리</h1></div>
+  <div class="body">
+    <div class="sec">받은 요청 2건<span class="more">아는 분인지 꼭 확인</span></div>
+    <div class="group">
+      <div class="row" onclick="reviewJoinReq()">
+        <div class="pfp s44">최*</div>
+        <div class="g"><div class="t">최*진 <span class="nick">유진쌤</span></div><div class="s">yuj****@naver.com · 8월 7일 요청</div><div class="s" style="color:var(--ok)">우리 센터 9회 참석</div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+      <div class="row" onclick="reviewJoinRisk()">
+        <div class="pfp s44" style="background:var(--wn-bg);color:var(--wn)">박*</div>
+        <div class="g"><div class="t">박*수 <span class="nick">bakbak</span></div><div class="s">qwe****@gmail.com · 8월 8일 요청</div><div class="s" style="color:var(--wn)">참여 기록 없음 · 어제 가입</div></div>
+        <span class="badge b-wn">확인 필요</span>
+      </div>
+    </div>
+    <div class="foot">눌러서 요청 메시지와 참여 이력을 확인하세요.<br>거절하면 목록에서 사라지고, 30일간 다시 요청할 수 없습니다.</div>
+
+    <div class="sec">현재 담당자 2명</div>
+    <div class="group">
+      <div class="row" style="cursor:default">
+        <div class="pfp s44">권*</div>
+        <div class="g"><div class="t">권*재 <span class="nick">(나)</span></div><div class="s">gwonjae@example.com</div><div class="s">2026년 3월부터</div></div>
+        <span class="badge b-ok">소유자</span>
+      </div>
+      <div class="row" onclick="memberMenu('최*진')">
+        <div class="pfp s44">최*</div>
+        <div class="g"><div class="t">최*진 <span class="nick">유진쌤</span></div><div class="s">yujin@naver.com</div><div class="s">2026년 5월부터 · 일정 3개 등록</div></div>
+        <span class="badge b-off">담당자</span>
+        <svg class="ic ch"><use href="#i-more"/></svg>
+      </div>
+    </div>
+    <div class="foot">담당자끼리만 서로의 이메일이 보입니다. 봉사자에게는 보이지 않습니다.</div>
+
+    <div class="sec">소유자 넘기기</div>
+    <div class="box">
+      <div style="font-size:14px;color:var(--tx2);line-height:1.75">담당자를 그만두거나 센터를 넘길 때 씁니다. 소유자가 없으면 아무도 이 센터를 관리할 수 없게 되므로, <b>먼저 넘긴 뒤에</b> 나갈 수 있습니다.</div>
+      <button class="btn btn-o" style="margin-top:14px;padding:12px;font-size:14px" onclick="transferOwner()">소유자 넘기기</button>
+    </div>
+
+    <div class="sec">담당자를 추가하려면</div>
+    <div class="box">
+      <div style="font-size:15px;font-weight:600;margin-bottom:12px">그분이 요청하면 승인만 해주시면 됩니다</div>
+      <div style="font-size:14px;color:var(--tx2);line-height:2">
+        <b style="color:var(--tx)">1</b>&nbsp;&nbsp;봉사모아에 가입 또는 로그인<br>
+        <b style="color:var(--tx)">2</b>&nbsp;&nbsp;‘행복 유기견 보호소’ 검색<br>
+        <b style="color:var(--tx)">3</b>&nbsp;&nbsp;관리자 등록 요청 누르기<br>
+        <b style="color:var(--tx)">4</b>&nbsp;&nbsp;여기서 승인
+      </div>
+      <div class="hint">이메일 주소를 물어보거나 초대 링크를 만들 필요가 없습니다.</div>
+    </div>
+
+    <div class="sec">담당자가 할 수 있는 것</div>
+    <div class="box">
+      <div class="kv"><span>일정 · 회차</span><span>모두 공유</span></div>
+      <div class="kv"><span>신청자 명단</span><span>모두 공유</span></div>
+      <div class="kv"><span>센터 정보 수정</span><span>소유자만</span></div>
+      <div class="kv" style="border:none"><span>담당자 승인 · 해임</span><span>소유자만</span></div>
+    </div>
+    <div class="foot">담당자는 일정과 명단을 함께 봅니다. 해임하면 즉시 접근이 끊깁니다.</div>
+  </div>
+  <div class="cta">
+    <button class="btn sso-k" onclick="howToJoin()"><svg class="ic"><use href="#i-msg"/></svg>카카오톡으로 방법 알려주기</button>
+  </div>
+</div>
+
+<!-- ============ A9 받은 후기 ============ -->
+<div class="scr" id="c-reviews">
+  <div class="hd plain"><svg class="ic" onclick="goBack('c-dash')"><use href="#i-back"/></svg><h1>받은 후기<span class="sub">12개 · 새 후기 2개</span></h1></div>
+  <div class="body">
+    <div class="group" style="margin-top:16px">
+      <div class="rvcard" onclick="go('v-rv1')">
+        <div class="rvimg"><svg class="ic"><use href="#i-photo"/></svg><div class="n">3</div></div>
+        <div class="rvc">
+          <div class="tt">처음 가는 분께 드리는 후기 <span class="badge b-ok" style="font-size:11px;padding:2px 7px">NEW</span></div>
+          <div class="ex">아이들이 정말 순해요. 선생님들이 하나하나 알려주셔서 어렵지 않았습니다.</div>
+          <div class="mt"><span>김*연</span>·<span>8월 2일</span></div>
+        </div>
+      </div>
+      <div class="rvcard" onclick="go('v-rv1')">
+        <div class="rvimg" style="background:#F1F1EE;color:var(--mu)"><svg class="ic"><use href="#i-msg"/></svg></div>
+        <div class="rvc">
+          <div class="tt">편한 옷 꼭 챙기세요 <span class="badge b-ok" style="font-size:11px;padding:2px 7px">NEW</span></div>
+          <div class="ex">생각보다 몸을 많이 씁니다. 주차가 안 돼서 버스 타고 갔습니다.</div>
+          <div class="mt"><span>준호</span>·<span>7월 26일</span>·<span style="color:var(--dg);cursor:pointer" onclick="event.stopPropagation();reportReview()">신고</span></div>
+        </div>
+      </div>
+      <div class="rvcard" onclick="go('v-rv1')">
+        <div class="rvimg" style="background:#FBF1DE;color:#8A5A05"><svg class="ic"><use href="#i-photo"/></svg><div class="n">1</div></div>
+        <div class="rvc">
+          <div class="tt">버스로 가는 길 안내</div>
+          <div class="ex">주차가 안 돼서 대중교통으로 갔어요. 응암역 2번 출구에서 마을버스 7번 타면 5분입니다.</div>
+          <div class="mt"><span>이*지</span>·<span>7월 19일</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="ban">
+      <div class="l">후기는 센터가 지울 수 없습니다</div>
+      <div class="c">사실과 다르거나 욕설이 담긴 후기는 신고해 주세요. 운영자가 확인 후 처리합니다.</div>
+    </div>
+    <div class="foot">후기에 자주 나오는 질문(주차·복장 등)은 <b>센터 정보 › 가기 전에 확인할 것</b>에 넣어두면 문의가 줄어듭니다.</div>
+  </div>
+  <div class="nav">
+    <div onclick="go('v-list')"><svg class="ic"><use href="#i-search"/></svg><span>찾기</span></div>
+    <div onclick="navGo('v-my')"><span class="wrapi"><svg class="ic"><use href="#i-calheart"/></svg><span class="dot">1</span></span><span>내 봉사</span></div>
+    <div class="on"><svg class="ic"><use href="#i-building"/></svg><span>내 센터</span></div>
+    <div onclick="navGo('v-profile')"><svg class="ic"><use href="#i-user"/></svg><span>내 정보</span></div>
+  </div>
+</div>
+
+<!-- ============ A1 로그인 ============ -->
+<div class="scr" id="c-login">
+  <div class="hd plain"><svg class="ic" onclick="go('v-list')"><use href="#i-x"/></svg><h1>로그인</h1></div>
+  <div class="body">
+    <div class="center" style="padding:40px 34px 32px">
+      <div class="logo" style="--lg:64px;margin-bottom:16px"><svg class="ic"><use href="#logo-mark"/></svg></div>
+      <div style="font-size:23px;font-weight:800;letter-spacing:-.045em">봉사모아</div>
+      <div style="font-size:14px;color:var(--tx2);margin-top:8px">봉사할 곳을 한곳에</div>
+    </div>
+
+    <div class="field"><label>이메일</label><input type="email" placeholder="hello@example.com"></div>
+    <div class="field" style="margin-bottom:8px"><label>비밀번호</label><input type="password" placeholder="8자 이상"></div>
+    <div style="padding:0 20px 20px;text-align:right">
+      <span style="font-size:13.5px;color:var(--tx2);cursor:pointer;text-decoration:underline;text-underline-offset:3px" onclick="resetPw()">비밀번호를 잊으셨나요?</span>
+    </div>
+
+    <div style="padding:0 16px"><button class="btn btn-p" onclick="doLogin()">로그인</button></div>
+
+    <div style="text-align:center;padding:24px 20px 0;font-size:14px;color:var(--tx2)">
+      아직 계정이 없으신가요?
+      <b style="color:var(--pri);cursor:pointer;margin-left:5px" onclick="go('c-signup')">회원가입</b>
+    </div>
+    <div class="foot" style="text-align:center;padding-top:18px">
+      <b style="color:var(--pri);cursor:pointer" onclick="go('v-list')">로그인 없이 둘러보기</b>
+    </div>
+  </div>
+</div>
+
+<!-- ============ A1-1 회원가입 ============ -->
+<div class="scr" id="c-signup">
+  <div class="hd plain"><svg class="ic" onclick="goBack('c-login')"><use href="#i-back"/></svg><h1>회원가입<span class="sub">잠깐이면 끝나요</span></h1></div>
+  <div class="body">
+
+    <!-- 1단계 · 이메일 인증. 여기를 통과해야 아래 칸이 열립니다. -->
+    <div class="field" style="margin-top:20px"><label>이메일<em>*</em></label>
+      <div class="inrow">
+        <input type="email" id="su-mail" placeholder="hello@example.com" oninput="checkMail(this)">
+        <button class="inbtn" id="su-send" onclick="sendCode()">인증번호 받기</button>
+      </div>
+      <div class="hint" id="su-mailmsg">비밀번호를 잊었을 때 찾는 용도로만 씁니다. 광고 메일은 보내지 않습니다.</div>
+    </div>
+
+    <div class="field" id="su-codebox" style="display:none"><label>인증번호<em>*</em></label>
+      <div class="inrow">
+        <input id="su-code" placeholder="6자리 숫자" inputmode="numeric" maxlength="6">
+        <button class="inbtn" onclick="verifyCode()">확인</button>
+      </div>
+      <div class="hint" id="su-codemsg">메일로 보낸 6자리를 입력해 주세요. <b id="su-timer">05:00</b> 안에 입력해야 합니다.
+        <span style="text-decoration:underline;cursor:pointer" onclick="sendCode()">다시 보내기</span></div>
+    </div>
+
+    <div id="su-ok" class="ban g" style="display:none;margin:0 16px 22px">
+      <div class="c"><b>이메일 확인이 끝났어요.</b> 이제 비밀번호와 닉네임만 정하면 됩니다.</div>
+    </div>
+
+    <!-- 2단계 · 인증 뒤에 열립니다 -->
+    <div id="su-rest" style="opacity:.4;pointer-events:none">
+      <div class="field"><label>비밀번호<em>*</em></label>
+        <input type="password" placeholder="8자 이상">
+        <div class="hint">영문과 숫자를 섞어 8자 이상으로 만들어 주세요.</div>
+      </div>
+
+      <div class="field"><label>이름<em>*</em></label>
+        <input placeholder="예) 김서연">
+        <div class="hint">봉사 당일 센터가 명단에서 확인하는 이름입니다.<br>
+          <b>가운데를 가려 «김*연» 으로만 보입니다.</b> 전체가 노출되는 곳은 없습니다.</div>
+      </div>
+
+      <div class="field"><label>닉네임<em>*</em></label>
+        <input placeholder="예) 뭉치엄마" oninput="checkNick(this)" id="nk2">
+        <div class="hint" id="nkmsg2">후기·프로필에 이 이름으로 보이고, 센터 명단에도 이름 옆에 함께 나옵니다.<br><b>전체 사용자 중 하나뿐</b>이어야 합니다.</div>
+      </div>
+
+      <div class="cline" onclick="toggleLine(this)"><div class="cbox"><svg class="ic"><use href="#i-check"/></svg></div>
+        <div class="cl"><b>이용약관</b>과 <b>개인정보 처리방침</b>에 동의합니다 <span style="color:var(--tx2)">(필수)</span>
+          <div style="font-size:12.5px;color:var(--tx2);margin-top:6px;line-height:1.6">봉사모아는 봉사할 자리를 <b>연결</b>합니다. 활동은 각 센터가 진행합니다.
+            <span style="text-decoration:underline;cursor:pointer" onclick="event.stopPropagation();policy()">자세히</span></div></div>
+      </div>
+    </div>
+
+    <div class="foot">만 14세 미만은 가입할 수 없습니다. 프로필 사진은 가입 후 <b>내 정보</b>에서 넣습니다.</div>
+    <div class="devnote"><b>시안 확인용</b> · <a onclick="checkMail({value:'hello@example.com'})">이미 가입된 이메일을 넣으면 어떻게 되는지</a></div>
+  </div>
+  <div class="cta"><button class="btn btn-p" id="su-submit" disabled onclick="doLogin()">가입하고 시작하기</button></div>
+</div>
+
+<!-- ============ A2-0 관리자 등록 요청 ============ -->
+<div class="scr" id="v-joinreq">
+  <div class="hd plain"><svg class="ic" onclick="goBack('v-list')"><use href="#i-back"/></svg><h1>관리자 등록 요청<span class="sub">이미 등록된 센터에 담당자로 합류</span></h1></div>
+  <div class="srch"><div class="in"><svg class="ic"><use href="#i-search"/></svg><input value="행복" placeholder="센터 이름으로 검색"></div></div>
+  <div class="body">
+    <div class="sec">검색 결과 2곳</div>
+    <div class="group">
+      <div class="row" onclick="sendJoinReq()">
+        <div class="thumb"><svg class="ic"><use href="#i-paw"/></svg></div>
+        <div class="g"><div class="t">행복 유기견 보호소</div><div class="s">서울 은평구 · 담당자 2명</div><div class="s" style="color:var(--pri)">내가 9번 참여한 센터예요</div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+      <div class="row" onclick="sendJoinReq()">
+        <div class="thumb" style="background:#FBF1DE;color:#8A5A05"><svg class="ic"><use href="#i-heart"/></svg></div>
+        <div class="g"><div class="t">행복나눔 복지관</div><div class="s">서울 노원구 · 담당자 1명</div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+    </div>
+
+    <div class="sec">내가 보낸 요청</div>
+    <div class="group">
+      <div class="row" style="cursor:default">
+        <div class="thumb" style="background:var(--page);color:var(--mu)"><svg class="ic"><use href="#i-hourglass"/></svg></div>
+        <div class="g"><div class="t">한강 지킴이</div><div class="s">8월 6일 요청 · 소유자 확인 중</div></div>
+        <span class="badge b-wn">대기</span>
+      </div>
+    </div>
+
+    <div class="ban" style="margin-top:22px">
+      <div class="l">찾는 센터가 없나요?</div>
+      <div class="c">아직 봉사모아에 등록되지 않은 센터입니다. 실제 운영자라면 직접 등록하실 수 있어요.</div>
+      <button class="btn btn-o" style="margin-top:12px;padding:11px;font-size:14px" onclick="newCenterWarn()">새 센터 등록하기</button>
+    </div>
+    <div class="foot">같은 센터에 중복 요청은 안 됩니다. 거절되면 30일 뒤에 다시 보낼 수 있어요.</div>
+  </div>
+</div>
+
+<!-- ============ A2 센터 등록 신청 ============ -->
+<div class="scr" id="c-new">
+  <div class="hd plain"><svg class="ic" onclick="goBack('idx')"><use href="#i-back"/></svg><h1>센터 등록 신청</h1></div>
+  <div class="body">
+    <div class="ban g">
+      <div class="c">신청하시면 운영자가 확인 후 승인합니다. 보통 1~2일 걸립니다.</div>
+    </div>
+    <div class="field"><label>센터 이름<em>*</em></label><input placeholder="행복 유기견 보호소"></div>
+    <div class="field"><label>봉사 분야<em>*</em></label>
+      <select><option>동물</option><option>환경</option><option>아동·청소년</option><option>어르신</option><option>장애인</option><option>기타</option></select>
+      <div class="hint">분야를 고르면 활동 특징이 자동으로 추천됩니다.</div>
+    </div>
+    <div class="field"><label>지역<em>*</em></label>
+      <div class="two"><select><option>서울</option><option>경기</option><option>인천</option></select><select><option>은평구</option><option>마포구</option><option>성북구</option></select></div>
+    </div>
+    <div class="field"><label>상세 주소<em>*</em></label><input placeholder="응암로 123, 2층"></div>
+    <div class="field"><label>대표 연락처<em>*</em></label><input placeholder="02-1234-5678">
+      <div class="hint">센터 정보에 <b>누구나 볼 수 있게</b> 표시됩니다. 봉사자가 길을 헤매거나 당일 못 오게 됐을 때 씁니다.</div>
+    </div>
+
+    <div class="bring" style="margin:0 16px 4px">
+      <div class="ib"><svg class="ic"><use href="#i-alert"/></svg></div>
+      <div class="v" style="font-size:13.5px;font-weight:500;line-height:1.6">개인 휴대폰 번호라면 <b>안심번호나 업무용 번호</b>를 쓰시는 편이 좋습니다. 한번 공개한 번호는 회수할 수 없습니다.</div>
+    </div>
+
+    <div class="field" style="margin-top:22px"><label>센터 소개</label>
+      <textarea placeholder="우리 센터가 어떤 곳인지 소개해 주세요.
+
+예) 2015년부터 유기견 200여 마리를 보호해 온 사설 보호소입니다. 매주 정기 봉사자분들과 함께 아이들을 돌보고 있습니다."></textarea>
+      <div class="hint">운영자가 <b>실제 운영 중인 센터인지 확인</b>할 때 가장 크게 참고합니다. 자세할수록 승인이 빨라집니다.<br>
+        지금 비워두셔도 되고, 승인 후에 언제든 고칠 수 있습니다.</div>
+    </div>
+
+    <div class="sec">봉사자 안전</div>
+    <div class="safe">
+      <div class="ib"><svg class="ic"><use href="#i-shield"/></svg></div>
+      <div><div class="l">현장 안전은 센터가 맡습니다</div><div class="v">
+        봉사모아는 봉사자와 센터를 <b>연결</b>합니다. 활동 자체는 센터가 진행하므로,
+        현장 안전과 사고 대응은 센터가 맡게 됩니다.
+      </div></div>
+    </div>
+    <div class="box" style="margin-top:12px">
+      <div style="font-size:13.5px;color:var(--tx2);line-height:1.85">
+        · 위험한 작업은 <b>가기 전에 확인할 것</b>에 적어주세요<br>
+        · 첫 참여자에게는 간단한 안전 안내를 해주세요<br>
+        · 다치는 일이 생기면 <b>센터가 먼저 대응</b>하고, 필요하면 운영자에게 알려주세요
+      </div>
+    </div>
+
+    <div class="cline" onclick="toggleLine(this)"><div class="cbox"><svg class="ic"><use href="#i-check"/></svg></div>
+      <div class="cl">위 내용을 확인했고, 실제 이 센터를 운영합니다 <span style="color:var(--tx2)">(필수)</span></div>
+    </div>
+
+    <div class="foot">봉사 안내와 «가기 전에 확인할 것»은 승인 후에 적습니다.</div>
+  </div>
+  <div class="cta"><button class="btn btn-p" onclick="go('c-pending')">등록 신청하기</button></div>
+</div>
+
+<!-- ============ A2-1 승인 대기 ============ -->
+<div class="scr" id="c-pending">
+  <div class="hd plain"><svg class="ic" onclick="goBack('idx')"><use href="#i-back"/></svg><h1>승인 대기 중</h1></div>
+  <div class="body">
+    <div class="center">
+      <div class="circle" style="background:var(--wn-bg);color:var(--wn)"><svg class="ic"><use href="#i-hourglass"/></svg></div>
+      <div style="font-size:20px;font-weight:700;letter-spacing:-.03em">신청이 접수됐어요</div>
+      <div style="font-size:14.5px;color:var(--tx2);margin-top:12px;line-height:1.7">운영자가 중복 센터 여부를 확인하고 있습니다.<br>보통 1~2일 안에 결과를 알려드립니다.</div>
+    </div>
+    <div class="box">
+      <div class="kv"><span>센터 이름</span><span>행복 유기견 보호소</span></div>
+      <div class="kv"><span>신청일</span><span>2026-08-08</span></div>
+      <div class="kv" style="border:none"><span>상태</span><span style="color:var(--wn)">검토 중</span></div>
+    </div>
+  </div>
+  <div class="cta"><button class="btn btn-o" onclick="go('idx')">목차로</button></div>
+</div>
+
+<!-- ============ S1 센터 승인 대기 ============ -->
+<div class="scr" id="s-list">
+  <div class="hd plain"><svg class="ic" onclick="goBack('idx')"><use href="#i-back"/></svg><h1>센터 승인<span class="sub">운영자 전용 · 대기 3건</span></h1></div>
+  <div class="body">
+    <div class="group" style="margin-top:16px">
+      <div class="row" onclick="go('s-detail')">
+        <div class="thumb" style="background:var(--wn-bg);color:var(--wn)"><svg class="ic"><use href="#i-alert"/></svg></div>
+        <div class="g"><div class="t">행복유기견보호소</div><div class="s">서울 은평구 · 2026-08-08</div><div class="s" style="color:var(--wn)">유사 센터 1건 발견</div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+      <div class="row" onclick="go('s-detail')">
+        <div class="thumb" style="background:#EAF3DE;color:#3B6D11"><svg class="ic"><use href="#i-leaf"/></svg></div>
+        <div class="g"><div class="t">양재천 환경지킴이</div><div class="s">서울 서초구 · 2026-08-07</div><div class="s" style="color:var(--ok)">유사 센터 없음</div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+      <div class="row" onclick="go('s-detail')">
+        <div class="thumb" style="background:#E6F1FB;color:#185FA5"><svg class="ic"><use href="#i-book"/></svg></div>
+        <div class="g"><div class="t">푸른꿈 지역아동센터</div><div class="s">서울 강북구 · 2026-08-06</div><div class="s" style="color:var(--ok)">유사 센터 없음</div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ S2 승인 검토 ============ -->
+<div class="scr" id="s-detail">
+  <div class="hd plain"><svg class="ic" onclick="goBack('s-list')"><use href="#i-back"/></svg><h1>승인 검토</h1></div>
+  <div class="body">
+    <div class="sec">신청 내용</div>
+    <div class="box">
+      <div class="kv"><span>센터 이름</span><span>행복유기견보호소</span></div>
+      <div class="kv"><span>분야</span><span>동물</span></div>
+      <div class="kv"><span>주소</span><span>은평구 응암로 123</span></div>
+      <div class="kv"><span>연락처</span><span>02-1234-5678</span></div>
+      <div class="kv" style="border:none"><span>신청자</span><span>권*재</span></div>
+    </div>
+    <div class="sec" style="color:var(--wn)">중복 의심 센터 1건</div>
+    <div class="box" style="border-color:var(--wn);background:var(--wn-bg)">
+      <div style="font-size:16px;font-weight:700;margin-bottom:10px">행복 유기견 보호소</div>
+      <div class="kv" style="border-color:rgba(0,0,0,.07)"><span>주소</span><span>은평구 응암로 123</span></div>
+      <div class="kv" style="border-color:rgba(0,0,0,.07)"><span>연락처</span><span style="color:var(--dg)">02-1234-5678 (일치)</span></div>
+      <div class="kv" style="border:none"><span>승인일</span><span>2026-03-12</span></div>
+      <div style="font-size:13px;color:var(--wn);margin-top:12px;line-height:1.6">이름 유사도 92% · 주소 일치 · 연락처 일치<br>같은 센터일 가능성이 높습니다.</div>
+    </div>
+    <div class="foot">최종 판단은 사람이 합니다. 자동 검사는 참고용입니다.</div>
+  </div>
+  <div class="cta">
+    <div class="two">
+      <button class="btn btn-d" onclick="reject()">반려</button>
+      <button class="btn btn-p" onclick="approve()">승인하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ S3 신고 처리 ============ -->
+<div class="scr" id="s-reports">
+  <div class="hd plain"><svg class="ic" onclick="goBack('idx')"><use href="#i-back"/></svg><h1>신고 처리<span class="sub">운영자 전용 · 대기 2건</span></h1></div>
+  <div class="body">
+    <div class="ban">
+      <div class="l">판단 기준</div>
+      <div class="c">욕설·허위·개인정보 노출만 숨김 처리합니다. <b>단순히 아쉬웠다는 후기는 숨기지 않습니다.</b></div>
+    </div>
+    <div class="group">
+      <div class="row" onclick="handleReport()">
+        <div class="thumb" style="background:var(--dg-bg);color:var(--dg)"><svg class="ic"><use href="#i-flag"/></svg></div>
+        <div class="g"><div class="t">‘편한 옷 꼭 챙기세요’</div><div class="s">행복 유기견 보호소가 신고 · 8월 7일</div><div class="s" style="color:var(--dg)">사유 · 오지 않은 사람입니다</div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+      <div class="row" onclick="handleReport()">
+        <div class="thumb" style="background:var(--dg-bg);color:var(--dg)"><svg class="ic"><use href="#i-flag"/></svg></div>
+        <div class="g"><div class="t">‘여기 진짜 별로예요’</div><div class="s">늘봄 어르신 돌봄센터가 신고 · 8월 5일</div><div class="s" style="color:var(--dg)">사유 · 사실과 다릅니다</div></div>
+        <svg class="ic ch"><use href="#i-right"/></svg>
+      </div>
+    </div>
+    <div class="sec">처리한 신고</div>
+    <div class="group">
+      <div class="row" style="cursor:default">
+        <div class="thumb" style="background:var(--page);color:var(--mu)"><svg class="ic"><use href="#i-check"/></svg></div>
+        <div class="g"><div class="t">‘주차 안내드립니다’</div><div class="s">유지 · 부정적이지만 사실 기술</div></div>
+        <span class="badge b-off">유지</span>
+      </div>
+      <div class="row" style="cursor:default">
+        <div class="thumb" style="background:var(--page);color:var(--mu)"><svg class="ic"><use href="#i-trash"/></svg></div>
+        <div class="g"><div class="t">‘★★ 담당자 실명 포함 ★★’</div><div class="s">숨김 · 제3자 실명·연락처 노출</div></div>
+        <span class="badge b-dg">숨김</span>
+      </div>
+    </div>
+    <div class="foot">신고는 <b>운영자에게만</b> 옵니다. 센터나 작성자에게는 알려지지 않습니다.</div>
+  </div>
+</div>
+
+<!-- ============ 공용 확인 팝업 ============ -->
+<div id="modal" class="dim" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="sheet">
+    <div class="grip"></div>
+    <h3 id="m-title"></h3>
+    <div id="m-body"></div>
+    <div id="m-actions" style="margin-top:20px"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* 화면 = URL 한 개. 실제 개발 때도 이 원칙을 그대로 씁니다.
+   덕분에 시안에서도 브라우저/폰의 뒤로가기가 그대로 동작합니다. */
+function render(id){
+  document.querySelectorAll('.scr').forEach(function(e){e.classList.toggle('on', e.id===id)});
+  var b=document.querySelector('#'+id+' .body'); if(b) b.scrollTop=0;
+  var j=document.getElementById('jump'); if(j) j.value=id;
+}
+/* ---- 화면 이동 ----
+   ⚠ 미리보기 창(iframe)이나 로컬 파일에서는 주소창 조작(history.pushState)이
+      보안상 막혀 있어 SecurityError 가 납니다.
+      그래서 «쓸 수 있으면 쓰고, 안 되면 자체 기록으로» 돌아가게 만듭니다.
+      브라우저·폰의 뒤로가기는 쓸 수 있을 때만 연동됩니다. */
+var CAN_URL = (function(){
+  try{ history.replaceState({probe:1}, '', location.href); return true; }
+  catch(e){ return false; }
+})();
+var TRAIL = ['idx'];   /* 지나온 화면 기록. 주소창을 못 쓸 때 뒤로가기의 근거가 됩니다 */
+
+function go(id){
+  if(!document.getElementById(id)) return;
+  if(TRAIL[TRAIL.length-1] !== id){
+    TRAIL.push(id);
+    if(CAN_URL){
+      try{ history.pushState({id:id}, '', '#'+id); }
+      catch(e){ CAN_URL = false; }   /* 한 번 실패하면 이후로는 시도하지 않습니다 */
+    }
+  }
+  render(id);
+}
+
+/* 뒤로가기는 «실제로 온 길»로 돌아가야 합니다.
+   예전에는 go('v-list') 처럼 목적지를 화면마다 박아뒀는데, 그러면
+   찜한 센터 → 센터 상세 → 뒤로 를 누르면 봉사 찾기로 튕겨나갔습니다. */
+function goBack(fallback){
+  if(CAN_URL && history.length > 1){ history.back(); return; }
+  if(TRAIL.length > 1){
+    TRAIL.pop();
+    render(TRAIL[TRAIL.length-1]);
+  }else{
+    go(fallback || 'v-list');
+  }
+}
+
+window.addEventListener('popstate', function(e){
+  var id = (e.state && e.state.id) || 'idx';
+  if(!document.getElementById(id)) return;
+  var i = TRAIL.lastIndexOf(id);          /* 기록을 그 지점까지 되감습니다 */
+  if(i >= 0) TRAIL.length = i + 1; else TRAIL.push(id);
+  render(id);
+});
+
+function boot(){
+  var h = '';
+  try{ h = location.hash.slice(1); }catch(e){}
+  var start = (h && document.getElementById(h)) ? h : 'idx';
+  TRAIL = [start];
+  render(start);
+
+  var j = document.getElementById('jump');
+  document.querySelectorAll('.scr').forEach(function(e){
+    var t = e.querySelector('h1');
+    var o = document.createElement('option');
+    o.value = e.id;
+    o.textContent = t ? t.textContent.trim().split('\n')[0] : e.id;
+    j.appendChild(o);
+  });
+  j.value = start;
+  setAuth(false);
+}
+if(document.readyState === 'loading') window.addEventListener('DOMContentLoaded', boot);
+else boot();
+/* ---- 필터 ----
+   처음 들어오면 아무것도 걸리지 않은 «서울 전체» 목록입니다.
+   좁히고 싶을 때만 필터 버튼을 누릅니다. 화면에 상시 노출되는 필터 UI는
+   버튼 하나뿐이라 첫 화면이 조용합니다. */
+function fpill(el){
+  el.parentNode.querySelectorAll('.fpill').forEach(function(c){c.classList.remove('on')});
+  el.classList.add('on');
+}
+function filterCount(){
+  var n=0;
+  document.querySelectorAll('#sheetF .fwrap').forEach(function(w){
+    var on=w.querySelector('.fpill.on');
+    if(on && on.textContent.trim()!=='상관없어요') n++;
+  });
+  var gu=document.querySelectorAll('#sheetF select')[1];
+  if(gu && gu.value!=='전체') n++;
+  return n;
+}
+function applyFilter(){
+  closeSheet('sheetF');
+  var n=filterCount(), b=document.getElementById('fbtn');
+  b.classList.toggle('on', n>0);
+  b.innerHTML='<svg class="ic"><use href="#i-set"/></svg>필터'+(n?'<span class="cnt">'+n+'</span>':'');
+  var sido=document.querySelectorAll('#sheetF select')[0].value;
+  var gu=document.querySelectorAll('#sheetF select')[1].value;
+  var where=sido+' '+(gu==='전체'?'전체':gu);
+  document.getElementById('rcount').innerHTML=where+' · <b>'+(n?'12':'128')+'</b>';
+}
+function resetFilter(){
+  document.querySelectorAll('#sheetF .fwrap').forEach(function(w){
+    w.querySelectorAll('.fpill').forEach(function(c,i){c.classList.toggle('on', i===0)});
+  });
+  document.querySelectorAll('#sheetF select').forEach(function(s){s.selectedIndex=0});
+  applyFilter();
+}
+function toggleDev(){ document.getElementById('devpanel').classList.toggle('on'); }
+function toggleDay(el){el.classList.toggle('on')}
+function chip(el){el.parentNode.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on')});el.classList.add('on')}
+function seg(el){el.parentNode.querySelectorAll('div').forEach(function(d){d.classList.remove('on')});el.classList.add('on')}
+function pickOne(el){el.parentNode.querySelectorAll('div').forEach(function(d){d.classList.remove('on')});el.classList.add('on')}
+function toggleLine(el){el.classList.toggle('on')}
+function tog(el){el.classList.toggle('on')}
+function openSheet(id){document.getElementById(id).style.display='flex'}
+function closeSheet(id){document.getElementById(id).style.display='none'}
+function myTab(el,k){
+  seg(el);
+  document.getElementById('my-up').style.display   = (k==='up')   ? 'block':'none';
+  document.getElementById('my-past').style.display = (k==='past') ? 'block':'none';
+}
+function fav(){
+  if(needLogin('fav', fav)) return;
+  var b=document.getElementById('favbtn');
+  var on=b.getAttribute('data-on')==='1';
+  b.setAttribute('data-on', on?'0':'1');
+  b.style.color = on ? 'var(--mu)' : '#E8455A';
+  b.querySelector('use').setAttribute('href', on ? '#i-heart' : '#i-heartf');
+  b.style.transform='scale(1.25)';
+  setTimeout(function(){b.style.transform='scale(1)'},140);
+}
+function conflict(){
+  if(needLogin('apply', conflict, '8월 23일 (일) 10:00 – 13:00')) return;
+  modal({title:'이 시간에 이미 다른 봉사가 있어요', ok:'내 봉사 확인하기', cancel:'닫기',
+    body:kv('신청하려는 봉사','8월 23일 (일) 10:00–13:00')+kv('이미 신청한 봉사','한강 지킴이 09:00–12:00',true)
+      +'<div style="margin-top:14px">'+note('시간이 겹쳐서 신청할 수 없습니다. 기존 봉사를 취소하면 신청할 수 있어요.<br><br>시간이 안 겹치면 같은 날 두 곳도 신청할 수 있습니다.')+'</div>',
+    then:function(){go('v-my')}});
+}
+/* ---- 로그인 상태 (시안 확인용) ---- */
+var AUTH=false, PENDING=null;
+var PUBLIC=['idx','v-splash','v-list','v-all','v-center','v-reviews','v-rv1','v-pub','v-done','c-login','c-signup'];
+function setAuth(v){
+  AUTH=!!v;
+  var b=document.getElementById('authbtn');
+  b.textContent = AUTH ? '로그인됨' : '비로그인';
+  b.className   = AUTH ? 'authon' : 'authoff';
+  document.querySelectorAll('.loginbtn').forEach(function(e){e.style.display = AUTH ? 'none' : 'block'});
+  /* 로그인하면 헤더 우측이 «로그인» 버튼에서 프로필 사진으로 바뀝니다 */
+  document.querySelectorAll('.authonly').forEach(function(e){e.style.display = AUTH ? 'flex' : 'none'});
+}
+/* ---- 중복 가입 방지 ----
+   두 겹으로 막습니다.
+   ① 이메일 중복 — 입력하는 즉시 알려줍니다. 다 채우고 나서 «이미 있는 계정입니다»
+      를 보면 그 자리에서 나갑니다.
+   ② 이메일 인증 — 링크를 눌러야 가입이 끝납니다. 아무 주소나 적은 계정은
+      영영 «미인증» 으로 남아 신청도 센터 등록도 못 합니다.
+
+   ⚠ 한 사람이 «다른 이메일로» 여러 계정을 만드는 것까지는 막지 못합니다.
+      그건 본인확인(휴대폰·아이핀)이 필요한데, 그러면 개인정보를 다시 받게 되고
+      이 서비스가 개인정보를 안 받기로 한 결정과 정면으로 부딪힙니다.
+      실제 피해(정원 선점, 반복 노쇼)가 나오면 그때 다시 판단합니다. */
+var TAKEN=['hello@example.com','test@test.com'];
+function checkMail(el){
+  var v=(el.value||'').trim().toLowerCase();
+  var msg=document.getElementById('su-mailmsg');
+  var box=document.getElementById('su-mail');
+  if(!v){ msg.innerHTML='비밀번호를 잊었을 때 찾는 용도로만 씁니다. 광고 메일은 보내지 않습니다.'; msg.style.color=''; box.style.borderColor=''; return; }
+  if(TAKEN.indexOf(v)>=0){
+    msg.innerHTML='<b>이미 가입된 이메일입니다.</b> <span style="text-decoration:underline;cursor:pointer" onclick="go(\'c-login\')">로그인하기</span> · <span style="text-decoration:underline;cursor:pointer" onclick="resetPw()">비밀번호 찾기</span>';
+    msg.style.color='var(--dg)'; box.style.borderColor='var(--dg)';
+  }else if(v.indexOf('@')<0){
+    msg.innerHTML='이메일 주소 형식이 아니에요.'; msg.style.color='var(--wn)'; box.style.borderColor='var(--bd2)';
+  }else{
+    msg.innerHTML='<b style="color:var(--ok)">사용할 수 있는 이메일이에요.</b>'; msg.style.color=''; box.style.borderColor='var(--pri)';
+  }
+}
+function resetPw(){
+  modal({title:'비밀번호 재설정', ok:'재설정 메일 보내기', cancel:'닫기',
+    body:'<div class="field" style="padding:0;margin:0"><label>가입한 이메일</label><input type="email" placeholder="hello@example.com"></div>'
+      +'<div style="margin-top:16px">'+note('메일로 받은 링크를 열면 새 비밀번호를 정할 수 있습니다. 메일이 안 오면 스팸함을 확인해 주세요.')+'</div>'});
+}
+/* 신청자 직접 추가 — 전화나 지인 소개로 신청받은 분을 센터가 명단에 넣습니다.
+   계정 없이 이름만으로 자리를 잡아둡니다. applications.is_manual = true */
+function addManual(){
+  modal({title:'신청자 직접 추가', ok:'명단에 추가', cancel:'닫기',
+    body:kv('회차','8월 15일 (토) 10:00–13:00')+kv('남은 자리','2명',true)
+      +'<div class="field" style="padding:0;margin:16px 0 0"><label>이름<em>*</em></label><input placeholder="예) 한아름">'
+      +'<div class="hint">명단에는 <b>한*름</b> 으로 표시됩니다.</div></div>'
+      +'<div class="field" style="padding:0;margin:14px 0 0"><label>메모</label><input placeholder="예) 최*진 님 지인 · 전화로 신청">'
+      +'<div class="hint">누가 왜 추가했는지 나중에 알아볼 수 있게 적어두세요.</div></div>'
+      +'<div style="margin-top:14px">'+note('계정 없이 자리만 잡아둡니다. 참석 확인과 후기는 쓸 수 없고, <b>정원에는 함께 잡힙니다.</b>')+'</div>'});
+}
+/* 신청자 상세 — 본인 신청과 직접 추가를 같은 형식으로 보여줍니다.
+   센터가 «누구인지 · 어떻게 들어왔는지» 를 한 화면에서 판단하고, 필요하면 뺍니다. */
+function applicant(name, nick, how){
+  var manual = (how === 'manual');
+  var body =
+      kv('이름', name + '  <span class="nick">실명을 가려서 표시</span>')
+    + kv('닉네임', nick ? nick : '<span style="color:var(--mu);font-weight:400">없음</span>')
+    + kv('신청 방법', manual ? '<span style="color:var(--wn)">센터가 직접 추가</span>' : '본인이 신청')
+    + kv('신청일', manual ? '8월 9일 · 권*재 님이 추가' : '8월 8일 오후 2:14')
+    + kv('우리 센터 참여', manual ? '기록 없음' : '12번째')
+    + kv('메모', manual
+        ? '최*진 님 지인 · 전화로 신청'
+        : '<span style="color:var(--mu);font-weight:400">없음</span>', true);
+
+  if(manual){
+    body += '<div style="margin-top:14px">' + note('계정이 없는 분입니다. <b>참석 확인과 후기</b>는 쓸 수 없고, 정원에만 함께 잡힙니다.') + '</div>';
+  }else{
+    body += '<div style="margin-top:14px">' + note('전화번호는 저장하지 않습니다. 연락이 필요하면 <b>현장에서</b> 직접 여쭤보세요.') + '</div>';
+  }
+  body += '<div style="margin-top:18px"><button class="btn btn-d" onclick="closeModal();dropApplicant(\''+name+'\','+manual+')">명단에서 제외하기</button></div>';
+
+  modal({title:name+' 님', ok:'닫기', cancel:false, body:body});
+}
+
+/* 명단에서 제외 — 되돌릴 수 없으므로 한 번 더 묻습니다. */
+function dropApplicant(name, manual){
+  modal({title:name+' 님을 명단에서 뺄까요?', danger:true, ok:'제외하기', cancel:'그대로 두기',
+    body:kv('회차','8월 15일 (토) 10:00–13:00')+kv('제외 후 남은 자리','3명',true)
+      +'<div style="margin-top:14px">'
+      + note(manual
+          ? '직접 추가한 분이라 <b>기록이 남지 않고 지워집니다.</b>'
+          : '<b>봉사자 화면에서도 «센터 사정으로 취소됨» 으로 바뀝니다.</b> 다만 알림이 없어 앱을 열어야 봅니다. 모르고 오시지 않도록 미리 알려주세요.')
+      +'</div>'
+      +'<div style="margin-top:10px">'+note('자리가 하나 열리고 다른 분이 바로 신청할 수 있습니다. 되돌리려면 다시 추가해야 합니다.')+'</div>'});
+}
+/* ---- 회원가입 · 이메일 인증을 입력 단계에서 ----
+   예전에는 가입 버튼을 누른 «뒤에» 인증 메일을 보냈습니다. 그러면
+   비밀번호까지 다 만든 뒤에야 오타를 발견하고, 되돌릴 길이 없습니다.
+   이제 이메일부터 확인하고, 통과해야 아래 칸이 열립니다.
+   (Supabase 로는 signInWithOtp → verifyOtp → updateUser(password) 순서) */
+var CODE_SENT=false, MAIL_OK=false, TIMER=null;
+function sendCode(){
+  var el=document.getElementById('su-mail'), v=(el.value||'').trim().toLowerCase();
+  if(!v || v.indexOf('@')<0){ checkMail(el); el.focus(); return; }
+  if(TAKEN.indexOf(v)>=0){ checkMail(el); return; }
+  CODE_SENT=true;
+  document.getElementById('su-codebox').style.display='block';
+  document.getElementById('su-send').textContent='다시 보내기';
+  document.getElementById('su-code').focus();
+  var left=300;
+  clearInterval(TIMER);
+  TIMER=setInterval(function(){
+    left--;
+    var t=document.getElementById('su-timer');
+    if(!t){ clearInterval(TIMER); return; }
+    if(left<=0){ clearInterval(TIMER); t.textContent='시간 만료'; t.style.color='var(--dg)'; return; }
+    t.textContent=('0'+Math.floor(left/60)).slice(-2)+':'+('0'+(left%60)).slice(-2);
+  },1000);
+}
+function verifyCode(){
+  var c=(document.getElementById('su-code').value||'').trim();
+  var m=document.getElementById('su-codemsg');
+  if(c.length!==6){
+    m.innerHTML='<b>6자리를 모두 입력해 주세요.</b>'; m.style.color='var(--dg)'; return;
+  }
+  clearInterval(TIMER); MAIL_OK=true;
+  document.getElementById('su-codebox').style.display='none';
+  document.getElementById('su-ok').style.display='block';
+  document.getElementById('su-mail').disabled=true;
+  document.getElementById('su-mail').style.background='var(--page)';
+  document.getElementById('su-send').style.display='none';
+  document.getElementById('su-mailmsg').innerHTML='<b style="color:var(--ok)">확인된 이메일입니다.</b> 바꾸려면 뒤로 갔다 다시 오세요.';
+  var r=document.getElementById('su-rest');
+  r.style.opacity='1'; r.style.pointerEvents='auto';
+  document.getElementById('su-submit').disabled=false;
+}
+function policy(){
+  modal({title:'약관과 개인정보', ok:'닫기', cancel:false,
+    body:'<div style="font-size:14px;font-weight:600;margin-bottom:8px">봉사모아가 하는 일</div>'
+      +'<div class="safe" style="margin:0"><div class="ib"><svg class="ic"><use href="#i-shield"/></svg></div>'
+      +'<div class="v"><b>봉사할 자리를 찾아 연결해 드립니다.</b><br>'
+      +'봉사 활동 자체는 각 센터가 진행하고, 현장 안전과 사고 대응도 센터가 맡습니다. '
+      +'봉사모아는 활동을 직접 운영하거나 감독하지 않습니다.</div></div>'
+      +'<div style="font-size:14px;font-weight:600;margin:20px 0 8px">이런 것은 제공되지 않습니다</div>'
+      +kv('봉사시간 실적','1365에 등록되지 않습니다')
+      +kv('봉사확인서','발급하지 않습니다')
+      +kv('봉사자 보험','센터가 가입한 경우에만',true)
+      +'<div style="margin-top:12px">'+note('봉사모아에 올라오는 곳은 대부분 <b>개인·소규모 센터</b>입니다. 공식 기관과 달리 이런 제도가 갖춰져 있지 않습니다.')+'</div>'
+      +'<div style="font-size:14px;font-weight:600;margin:22px 0 8px">수집하는 정보</div>'
+      +kv('이메일','비밀번호 찾기용 · 화면에 안 보임')
+      +kv('이름','항상 «김*연» 으로 가려서 표시')
+      +kv('닉네임 · 사진','센터와 다른 봉사자에게 노출')
+      +kv('신청 기록','참여한 센터가 조회',true)
+      +'<div style="margin-top:12px">'+note('<b>전화번호·주소·생년월일은 받지 않습니다.</b><br>탈퇴하면 계정 정보는 즉시 삭제되고, 지난 신청 기록은 센터의 운영 기록으로 1년 보관 후 삭제됩니다.')+'</div>'
+      +'<div style="margin-top:18px"><button class="btn btn-o" onclick="closeModal();contactAdmin()">운영자에게 문의하기</button></div>'});
+}
+/* 문의 창구 — 사고나 분쟁이 생겼을 때 갈 곳이 있어야 합니다.
+   창구가 없으면 사용자는 그냥 나가거나, 더 큰 곳에 알립니다. */
+function contactAdmin(){
+  modal({title:'운영자에게 문의하기', ok:'보내기', cancel:'닫기',
+    body:'<div class="field" style="padding:0;margin:0"><label>무엇에 대한 문의인가요</label>'
+      +'<select><option>봉사 중 사고·부상</option><option>센터와의 문제</option><option>다른 봉사자 신고</option>'
+      +'<option>계정·로그인</option><option>그 밖의 문의</option></select></div>'
+      +'<div class="field" style="padding:0;margin:16px 0 0"><label>내용</label>'
+      +'<textarea style="min-height:96px" placeholder="언제·어디서·무슨 일이 있었는지 적어주세요."></textarea></div>'
+      +'<div style="margin-top:14px">'+note('<b>사고나 부상이라면 센터에도 함께 알려주세요.</b> 현장 상황은 센터가 가장 잘 압니다.<br><br>답변은 가입하신 이메일로 드립니다.')+'</div>'});
+}
+function editPfp(){
+  modal({title:'프로필 사진', ok:'사진 고르기', cancel:'기본 이미지로',
+    body:note('사진은 <b>선택</b>입니다. 넣지 않으면 이름 첫 글자가 표시됩니다.<br><br>사진은 후기와 신청자 명단에 보입니다.')});
+}
+/* 닉네임 변경 — 전체 사용자 중 하나뿐이어야 합니다. 입력하는 동안 확인합니다. */
+var NICK_TAKEN=['뭉치','서연','봉사왕','하늘','준호'];
+function editNick(){
+  modal({title:'닉네임 변경', ok:'저장', cancel:'닫기',
+    body: kv('이름','김*연  <span class="nick">바꿀 수 없어요</span>', true)
+      +'<div class="field" style="padding:0;margin:16px 0 0"><label>닉네임<em>*</em></label>'
+      +'<input id="nk" value="뭉치엄마" oninput="checkNick(this)">'
+      +'<div class="hint" id="nkmsg">후기·프로필에 이 이름으로 보이고, 센터 명단에도 이름 옆에 함께 나옵니다.</div></div>'
+      +'<div style="margin-top:16px">'+note('닉네임은 <b>전체 사용자 중 하나뿐</b>이어야 합니다. 이미 쓰는 사람이 있으면 다른 걸로 정해주세요.<br><br>이름은 봉사 당일 확인용이라 바꿀 수 없고, 전체가 보이는 곳은 없습니다.')+'</div>'});
+}
+function checkNick(el){
+  var v=(el.value||'').trim();
+  var m=document.getElementById(el.id==='nk2' ? 'nkmsg2' : 'nkmsg');
+  if(!m) return;
+  if(!v){ m.innerHTML='닉네임을 입력해 주세요.'; m.style.color='var(--wn)'; el.style.borderColor='var(--bd2)'; return; }
+  if(v.length<2){ m.innerHTML='2글자 이상으로 정해주세요.'; m.style.color='var(--wn)'; el.style.borderColor='var(--bd2)'; return; }
+  if(NICK_TAKEN.indexOf(v)>=0){
+    m.innerHTML='<b>이미 쓰고 있는 닉네임이에요.</b> 다른 걸로 정해주세요.';
+    m.style.color='var(--dg)'; el.style.borderColor='var(--dg)';
+  }else{
+    m.innerHTML='<b style="color:var(--ok)">쓸 수 있는 닉네임이에요.</b>';
+    m.style.color=''; el.style.borderColor='var(--pri)';
+  }
+}
+function needLogin(kind, then, detail){
+  if(AUTH) return false;
+  PENDING = then || null;
+  loginGate(kind, detail);
+  return true;
+}
+function doLogin(){
+  setAuth(true);
+  var f=PENDING; PENDING=null;
+  if(f) f(); else go('v-list');
+}
+function navGo(id){
+  if(PUBLIC.indexOf(id)>=0) return go(id);
+  if(needLogin('tab', function(){go(id)})) return;
+  go(id);
+}
+function loginGate(kind, detail){
+  var m;
+  if(kind==='center')      m={t:'센터 등록은 로그인 후에 진행돼요',  b:'센터 담당자가 맞는지 확인해야 해서예요. 등록은 무료입니다.'};
+  else if(kind==='fav')    m={t:'찜은 로그인 후에 쓸 수 있어요',    b:'찜해두면 이 센터에 새 일정이 열렸을 때 바로 확인하실 수 있어요.'};
+  else if(kind==='tab')    m={t:'로그인 후에 볼 수 있는 화면이에요',  b:'내 봉사 기록과 센터 관리는 계정에 연결됩니다.'};
+  else                     m={t:'로그인하고 신청하기',             b:'센터에 전달할 이름이 필요해서예요.'};
+  modal({title:m.t, ok:'로그인 / 가입하기', cancel:'나중에 할게요',
+    body:note(m.b+' <b>이메일과 비밀번호만 있으면 됩니다.</b>')
+      +(detail ? '<div style="margin-top:14px">'+kv('선택한 봉사',detail,true)+'</div>' : '')
+      +'<div style="margin-top:14px">'+note('가입하면 <b>이 화면으로 그대로 돌아옵니다.</b>')+'</div>',
+    then:function(){go('c-login')}});
+}
+function centerEntry(){
+  modal({title:'센터가 이미 등록돼 있나요?', ok:'센터 검색해서 요청하기', cancel:'닫기',
+    body:note('같은 센터가 두 번 등록되면 봉사자가 헷갈리고 신청자 명단이 갈라집니다.<br>먼저 <b>이미 등록된 센터인지</b> 확인해 주세요.')
+      +'<div style="margin-top:18px"><button class="btn btn-o" onclick="closeModal();newCenterWarn()">아니요, 새로 등록할게요</button></div>',
+    then:function(){go('v-joinreq')}});
+}
+function newCenterWarn(){
+  modal({title:'실제 운영자만 등록할 수 있어요', danger:true, ok:'확인했습니다, 등록할게요', cancel:'뒤로',
+    body:'<div class="ban" style="margin:0"><div class="c">'
+      +'등록하면 이 센터의 <b>소유자</b>가 되어 일정과 봉사자 연락처를 다루게 됩니다.<br><br>'
+      +'· 운영자가 <b>실제 존재하는 센터인지 확인</b>한 뒤 승인합니다<br>'
+      +'· 이미 등록된 센터는 <b>중복으로 승인되지 않습니다</b><br>'
+      +'· 남의 센터를 등록하면 <b>계정이 정지</b>될 수 있습니다'
+      +'</div></div>'
+      +'<div style="margin-top:16px">'+note('그 센터에서 봉사만 하시는 분이라면 등록이 아니라 <b>관리자 등록 요청</b>을 보내주세요.')+'</div>',
+    then:function(){go('c-new')}});
+}
+function sendJoinReq(){
+  modal({title:'관리자 등록을 요청할까요?', ok:'요청 보내기',
+    body:kv('센터','행복 유기견 보호소')+kv('받는 사람','센터 소유자',true)
+      +'<div style="margin-top:14px"><label style="font-size:14px;font-weight:600;display:block;margin-bottom:8px">소유자에게 보낼 한 마디</label>'
+      +'<textarea style="min-height:88px" placeholder="누구인지 알아볼 수 있게 적어주세요.&#10;&#10;예) 토요일 산책 담당입니다. 원장님께 말씀드렸어요."></textarea></div>'
+      +'<div style="margin-top:14px">'+note('소유자가 확인하고 승인하면 담당자가 됩니다. 보통 1~2일 걸립니다.')+'</div>',
+    then:function(){joinSent()}});
+}
+function joinSent(){
+  modal({title:'요청을 보냈어요', ok:'확인', cancel:false,
+    body:note('센터 소유자가 확인 중입니다. 결과는 알림으로 알려드립니다.<br><br>같은 센터에 <b>중복 요청은 안 되고</b>, 거절되면 30일 뒤에 다시 보낼 수 있습니다.')});
+}
+function reviewJoinReq(){
+  modal({title:'관리자 요청 검토', ok:'담당자로 승인', cancel:'닫기',
+    body:kv('이름','최*진')+kv('닉네임','유진쌤')+kv('이메일','yuj****@naver.com')+kv('가입일','2025년 4월 (1년 4개월)',true)
+      +'<div class="ban g" style="margin:14px 0 0"><div class="l">우리 센터 참여 이력 있음</div>'
+      +'<div class="c">7월 26일 · 7월 12일 외 <b>9회 참석</b><br>가장 최근 참여 8월 2일</div></div>'
+      +'<div style="margin-top:14px;background:var(--page);border-radius:12px;padding:14px;font-size:14px;line-height:1.65">'
+      +'“토요일 산책 담당하는 최*진입니다. 원장님께 말씀드렸어요.”</div>'
+      +'<div style="margin-top:16px">'+note('승인하면 <b>담당자</b>가 됩니다. 일정과 명단은 볼 수 있지만 <b>센터 정보 수정과 관리자 추가는 못 합니다.</b> 언제든 해임할 수 있어요.')+'</div>'
+      +'<div style="margin-top:16px"><button class="btn btn-d" onclick="closeModal()">거절</button></div>'});
+}
+function reviewJoinRisk(){
+  modal({title:'관리자 요청 검토', danger:true, ok:'그래도 승인', cancel:'닫기',
+    body:kv('이름','박*수')+kv('닉네임','bakbak')+kv('이메일','qwe****@gmail.com')+kv('가입일','어제',true)
+      +'<div class="ban" style="margin:14px 0 0"><div class="l">확인이 필요합니다</div>'
+      +'<div class="c">· 우리 센터에 <b>참여한 기록이 없습니다</b><br>· 가입한 지 <b>하루</b> 됐습니다<br>· 최근 <b>다른 센터 4곳</b>에도 같은 요청을 보냈습니다</div></div>'
+      +'<div style="margin-top:16px">'+note('아는 분이 맞는지 <b>직접 확인</b>해 보세요. 모르는 분이면 거절하시면 됩니다.')+'</div>'
+      +'<div style="margin-top:16px"><button class="btn btn-d" onclick="closeModal()">거절하고 신고</button></div>',
+    then:riskConfirm});
+}
+/* 위험 신호가 있는 요청은 한 번 더 묻습니다.
+   담당자가 되면 신청자 명단 전체를 보게 되므로, 실수로 승인하면 되돌리기 늦습니다. */
+function riskConfirm(){
+  modal({title:'확인이 필요한 요청입니다', danger:true, ok:'승인하기', cancel:'그대로 두기',
+    body:note('승인하면 <b>박*수 님이 지금 바로</b> 이 센터의 모든 신청자 명단을 보게 됩니다.')
+      +'<div style="margin-top:14px">'+kv('보게 되는 것','신청자 이름·닉네임·참여 이력')+kv('할 수 있는 것','일정 등록·수정, 회차 휴무',true)+'</div>'
+      +'<div style="margin-top:14px">'+note('나중에 해임할 수는 있지만, <b>그동안 본 명단은 되돌릴 수 없습니다.</b>')+'</div>'});
+}
+function shareSheet(){
+  modal({title:'공유하기', ok:'닫기', cancel:false,
+    body:'<div class="sharegrid">'
+      +'<div onclick="closeModal();shareDone(\'센터\')"><div class="sb" style="background:#FEE500;color:#191600"><svg class="ic"><use href="#i-msg"/></svg></div><span>카카오톡</span></div>'
+      +'<div onclick="closeModal();shareDone(\'센터\')"><div class="sb"><svg class="ic"><use href="#i-link"/></svg></div><span>링크 복사</span></div>'
+      +'<div onclick="closeModal();shareDone(\'센터\')"><div class="sb"><svg class="ic"><use href="#i-share"/></svg></div><span>다른 앱</span></div>'
+      +'</div>'
+      +'<div style="font-size:14px;font-weight:600;margin:20px 0 10px">무엇을 공유할까요?</div>'
+      +'<div class="pick wide" style="padding:0;margin-bottom:12px"><div class="on" onclick="pickOne(this)">센터 전체</div><div onclick="pickOne(this)">8월 15일 회차</div></div>'
+      +note('<b>센터 전체</b> — 센터 소개와 신청 가능한 날짜가 함께 보입니다.<br><b>회차</b> — 그 날짜 하나만. "이날 같이 갈래?" 할 때 좋습니다.')});
+}
+function shareDone(what){
+  modal({title:'링크를 복사했어요', ok:'확인', cancel:false,
+    body:'<div style="background:var(--page);border-radius:12px;padding:14px;font-size:13px;color:var(--tx2);word-break:break-all;line-height:1.6">bongsamoa.kr/c/happy-dog<br>?d=2026-08-15</div>'
+      +'<div style="margin-top:14px">'+note('나중에 앱이 나와도 <b>같은 주소</b>가 앱에서 열립니다. 지금 공유한 링크가 그대로 살아 있어요.')+'</div>'});
+}
+function calMode(k){
+  document.getElementById('cal-week').style.display  = (k==='week')  ? 'grid':'none';
+  document.getElementById('cal-daily').style.display = (k==='daily') ? 'grid':'none';
+  document.getElementById('cm-week').classList.toggle('on',k==='week');
+  document.getElementById('cm-daily').classList.toggle('on',k==='daily');
+}
+function calNext(){
+  modal({title:'9월 일정이 아직 없어요', ok:'닫기',
+    body:note('이 센터는 9월 5일까지 일정이 등록돼 있습니다. 그 뒤 날짜는 센터가 일정을 연장하면 열립니다.')});
+}
+
+/* ---- 공용 확인 팝업 ---- */
+function kv(k,v,last){return '<div class="kv"'+(last?' style="border:none"':'')+'><span>'+k+'</span><span>'+v+'</span></div>'}
+function note(t){return '<div style="font-size:14px;color:var(--tx2);line-height:1.7">'+t+'</div>'}
+function modal(o){
+  document.getElementById('m-title').textContent=o.title;
+  document.getElementById('m-body').innerHTML=o.body||'';
+  var a=document.getElementById('m-actions'); a.innerHTML='';
+  var ok=document.createElement('button');
+  ok.className='btn '+(o.danger?'btn-d':'btn-p');
+  ok.textContent=o.ok||'확인'; ok.id='m-ok';
+  if(o.needAgree) ok.disabled=true;
+  ok.onclick=function(){closeModal(); if(o.then) o.then();};
+  a.appendChild(ok);
+  if(o.cancel!==false){
+    var no=document.createElement('button');
+    no.className='btn btn-o'; no.style.marginTop='9px';
+    no.textContent=o.cancel||'닫기'; no.onclick=closeModal;
+    a.appendChild(no);
+  }
+  document.getElementById('modal').style.display='flex';
+}
+function closeModal(){document.getElementById('modal').style.display='none'}
+function agree(el){
+  el.classList.toggle('on');
+  document.getElementById('m-ok').disabled = !el.classList.contains('on');
+}
+
+/* ---- 화면별 팝업 ---- */
+function apply(d,t){
+  if(needLogin('apply', function(){apply(d,t,left)}, d+' '+t)) return;
+  var conds='<div style="margin:18px 0 10px;font-size:14px;font-weight:600">신청 전 확인해 주세요</div>'
+    +'<div class="conds" style="padding:0">'
+    +'<span class="cond imp"><svg class="ic"><use href="#i-alert"/></svg>만 14세 이상</span>'
+    +'<span class="cond"><svg class="ic"><use href="#i-check"/></svg>실외 활동</span>'
+    +'<span class="cond"><svg class="ic"><use href="#i-check"/></svg>동물과 접촉</span>'
+    +'<span class="cond"><svg class="ic"><use href="#i-check"/></svg>주차 불가</span></div>'
+    +'<div class="bring" style="margin:12px 0 0"><div class="ib"><svg class="ic"><use href="#i-bag"/></svg></div>'
+    +'<div class="l">준비물</div><div class="v">긴바지 · 운동화 · 개인 물병</div></div>'
+    +'<div class="safe" style="margin:14px 0 0">'
+    +'<div class="ib"><svg class="ic"><use href="#i-shield"/></svg></div>'
+    +'<div><div class="l">알아두실 것</div><div class="v">'
+    +'개인·소규모 센터라 <b>봉사자 보험과 봉사시간 실적이 없습니다.</b><br>'
+    +'활동 중 생긴 일은 센터와 함께 해결합니다.<br>'
+    +'몸이 안 좋거나 위험해 보이면 언제든 쉬셔도 됩니다.'
+    +'</div></div></div>'
+    +'<div class="agree" onclick="agree(this)"><div class="cbox"><svg class="ic"><use href="#i-check"/></svg></div>'
+    +'<div class="cl">위 내용을 확인했고, 저에게 해당됩니다</div></div>';
+  modal({title:'이 날짜로 신청할까요?',
+    body:kv('센터','행복 유기견 보호소')+kv('날짜',d)+kv('시간',t,true)+conds,
+    ok:'신청하기', needAgree:true, then:function(){go('v-done')}});
+}
+function centerInfo(){
+  modal({title:'행복 유기견 보호소',
+    body:'<div style="font-size:14px;font-weight:600;margin-bottom:7px">센터 소개</div>'
+      +note('2015년부터 유기견 200여 마리를 보호해 온 사설 보호소입니다. 매주 정기 봉사자분들과 함께 아이들을 돌보고 있습니다.')
+      +'<div style="font-size:14px;font-weight:600;margin:20px 0 7px">봉사 안내</div>'
+      +note('그날 필요한 일은 현장에서 안내드립니다. 첫 참여자는 10분 안전 교육 후 활동합니다. 폭염 기간에는 산책을 오전으로 당깁니다.')
+      +'<div style="font-size:14px;font-weight:600;margin:20px 0 9px">기본 정보</div>'
+      +'<div class="kv"><span>주소</span><span style="text-align:right">서울 은평구 응암로 123, 2층'
+        +'<span class="copybtn" onclick="copyAddr()"><svg class="ic"><use href="#i-copy"/></svg>복사</span></span></div>'
+      +'<div class="kv"><span>연락처</span><span><a href="tel:0212345678" style="color:var(--ok);font-weight:600;text-decoration:none">02-1234-5678</a></span></div>'
+      +kv('분야','동물')
+      +'<div class="kv" style="border:none"><span>봉사자 보험</span><span><span class="insb">가입 안 됨</span></span></div>'
+      +'<div style="margin-top:14px">'+note('개인·소규모 센터는 보험 가입이 어려운 경우가 많습니다. 활동 중 생긴 일은 <b>센터와 함께 해결</b>합니다.')+'</div>',
+    ok:'닫기', cancel:false});
+}
+/* 주소 복사 — 지도 앱에 붙여넣어 길을 찾습니다. 지도를 직접 넣지 않는 대신입니다. */
+function copyAddr(){
+  var t='서울 은평구 응암로 123, 2층';
+  if(navigator.clipboard) navigator.clipboard.writeText(t);
+  var b=document.querySelector('#m-body .copybtn');
+  if(b){ b.innerHTML='복사했어요'; b.classList.add('done'); setTimeout(function(){
+    b.innerHTML='<svg class="ic"><use href="#i-copy"/></svg>복사'; b.classList.remove('done'); },1600); }
+}
+/* 센터 상세에서 바로 관리자 권한 요청 — 센터를 검색해 찾아 들어갈 필요가 없습니다. */
+function askAdmin(){
+  if(needLogin('center', askAdmin)) return;
+  modal({title:'관리자 등록을 요청할까요?', ok:'요청 보내기', cancel:'닫기',
+    body:kv('센터','행복 유기견 보호소')+kv('받는 사람','이 센터의 소유자',true)
+      +'<div class="field" style="padding:0;margin:16px 0 0"><label>누구인지 알려주세요</label>'
+      +'<textarea style="min-height:88px" placeholder="예) 토요일 산책 담당입니다. 원장님께 말씀드렸어요."></textarea>'
+      +'<div class="hint">소유자가 이 글을 보고 승인 여부를 정합니다.</div></div>'
+      +'<div style="margin-top:14px">'+note('승인되면 <b>담당자</b>가 되어 일정과 신청자 명단을 관리할 수 있습니다. 봉사 신청과는 별개입니다.')+'</div>'});
+}
+/* 취소는 봉사 시작 전까지 언제든 됩니다. 마감 시한을 두지 않습니다.
+   당일 취소를 막으면 «취소 못 하고 그냥 안 오는» 조용한 노쇼로 바뀌기 때문입니다.
+   대신 시점에 따라 문구만 다르게 합니다. soon=true 이면 하루 전~당일. */
+function cancelApply(d,c,soon){
+  var body = kv('날짜',d)+kv('센터',c,true)+'<div style="margin-top:14px">';
+  if(soon){
+    body += note('센터가 이미 인원에 맞춰 준비했을 수 있어요. <b>취소는 지금도 됩니다.</b> 다만 센터에 한 번 알려주시면 큰 도움이 됩니다.')
+         +  '</div><div style="margin-top:10px">'+kv('센터 연락처','02-1234-5678',true)+'</div>'
+         +  '<div style="margin-top:12px;font-size:12.5px;color:var(--mu);line-height:1.6">당일에 취소해도 «기간 만료»로 기록되지 않습니다. 취소는 노쇼가 아닙니다.</div>';
+  }else{
+    body += note('취소하면 그 자리는 다른 분이 바로 신청할 수 있습니다. 취소에는 불이익이 없습니다.')+'</div>';
+  }
+  modal({title:'봉사를 취소할까요?', danger:true, ok:'취소하기', cancel:'돌아가기', body:body});
+}
+function confirmAttend(){
+  modal({title:'참석을 확인할까요?', ok:'참석 확인', cancel:'닫기',
+    body:kv('센터','행복 유기견 보호소')+kv('봉사일','8월 8일 (금) 10:00')+kv('확인 기간','8월 11일까지',true)
+      +'<div style="margin-top:14px">'+note('센터가 그날 몇 분이 오셨는지 알 수 있는 <b>유일한 방법</b>입니다. 확인해도 아무 부담이 없어요.')+'</div>',
+    then:attendDone});
+}
+/* 참석 확인 직후 — 후기를 권하는 자리.
+   바로 «후기 쓰기» 화면으로 밀어넣지 않고 한 번 물어봅니다.
+   방금 다녀온 순간이 가장 쓰고 싶은 때지만, 강요하면 부담이 됩니다. */
+function attendDone(){
+  modal({title:'참석 확인이 끝났어요', ok:'후기 쓰기', cancel:'다음에 할게요',
+    body:'<div style="text-align:center;padding:6px 0 18px">'
+      +'<div class="circle" style="width:58px;height:58px;margin-bottom:14px"><svg class="ic" style="font-size:30px"><use href="#i-check"/></svg></div>'
+      +'<div style="font-size:15.5px;font-weight:600;letter-spacing:-.02em">오늘 하루 고생 많으셨습니다</div>'
+      +'<div style="font-size:14px;color:var(--tx2);line-height:1.7;margin-top:9px">'
+      +'행복 유기견 보호소에 다녀오신 이야기를<br>짧게 남겨주시겠어요?</div>'
+      +'</div>'
+      +note('처음 가는 분들은 <b>먼저 다녀온 사람의 후기</b>를 가장 많이 봅니다.<br>두어 줄이면 충분하고, 사진 한 장이면 더 좋아요.')
+      +'<div style="margin-top:12px;font-size:12.5px;color:var(--mu);line-height:1.6">지금 안 쓰셔도 «내 봉사»에서 언제든 남길 수 있습니다.</div>',
+    then:function(){go('v-review')}});
+}
+function closeSession(){
+  modal({title:'이 회차를 휴무로 바꿀까요?', danger:true, ok:'휴무로 바꾸기', cancel:'돌아가기',
+    body:kv('회차','8월 29일 (토) 10:00–17:00')+kv('신청한 사람','6명',true)
+      +'<div style="margin-top:14px">'+note('<b>신청한 6명의 신청이 모두 취소됩니다.</b> 봉사자 화면에는 «센터 사정으로 취소됨» 으로 표시됩니다.')+'</div>'
+      +'<div style="margin-top:10px;background:#FDF3E3;border-radius:12px;padding:14px 15px">'
+      +'<div style="font-size:13.5px;line-height:1.7;color:#8A5A16;font-weight:600">6명에게 자동으로 연락이 가지 않습니다</div>'
+      +'<div style="font-size:13px;line-height:1.7;color:#8A5A16;margin-top:3px">봉사자 화면에는 «센터 사정으로 취소됨» 과 <b>휴무 사유</b>가 뜨지만, 앱을 열어야 봅니다. 모르고 오시는 분이 없도록 아는 연락처로 한 번 알려주세요.</div>'
+      +'</div>'
+      +'<div style="margin-top:16px"><label style="font-size:14px;font-weight:600;display:block;margin-bottom:8px">휴무 사유 <span style="color:var(--mu);font-weight:400">· 봉사자에게 그대로 보입니다</span></label><input placeholder="시설 점검"></div>'
+      +'<div style="margin-top:12px">'+note('휴무를 되돌려도 <b>취소된 신청은 살아나지 않습니다.</b> 이미 다른 일정을 잡은 분이 있기 때문입니다. 빈 자리로 다시 열립니다.')+'</div>'});
+}
+function changeCap(){
+  modal({title:'정원을 바꿀까요?', ok:'변경하기', cancel:'그대로 두기',
+    body:kv('현재 정원','8명')+kv('신청한 사람','6명',true)
+      +'<div style="margin-top:16px"><input type="number" value="8"></div>'
+      +'<div style="margin-top:14px">'+note('이미 신청한 <b>6명보다 적게는 줄일 수 없습니다.</b> 늘리면 그 자리는 바로 열립니다.')+'</div>'});
+}
+function howToJoin(){
+  modal({title:'이 내용을 보내드릴게요', ok:'카카오톡으로 보내기', cancel:'닫기',
+    body:'<div style="background:var(--page);border-radius:12px;padding:16px;font-size:14px;line-height:1.85;color:var(--tx)">'
+      +'봉사모아에서 <b>행복 유기견 보호소</b> 담당자로 등록해 주세요.<br><br>'
+      +'1. 링크 열고 카카오로 로그인<br>'
+      +'2. 관리자 등록 요청 누르기<br>'
+      +'3. 제가 승인하면 끝<br><br>'
+      +'<span style="color:var(--pri)">bongsamoa.kr/join/happy-dog</span></div>'
+      +'<div style="margin-top:14px">'+note('링크를 열면 <b>우리 센터가 이미 선택된 상태</b>로 요청 화면이 뜹니다. 검색할 필요가 없어요.')+'</div>'});
+}
+function memberMenu(name){
+  modal({title:name+' 님', ok:'닫기', cancel:false,
+    body:kv('권한','담당자')+kv('이메일','yujin@naver.com')+kv('합류','2026년 5월')+kv('등록한 일정','3개',true)
+      +'<div style="margin-top:18px"><button class="btn btn-d" onclick="closeModal();removeMember(\''+name+'\')">담당자에서 제외하기</button></div>'
+      +'<div style="margin-top:14px">'+note('소유자로 올리는 것은 <b>소유자 넘기기</b>에서 따로 합니다. 실수로 소유권이 넘어가지 않게 하기 위해서입니다.')+'</div>'});
+}
+
+/* 소유자 넘기기 — 최종 권한자가 바뀔 때를 위한 장치입니다.
+   되돌릴 수 없으므로 두 번 확인합니다. */
+function transferOwner(){
+  modal({title:'누구에게 넘길까요?', ok:'다음', cancel:'닫기',
+    body:note('소유자는 <b>센터에 한 명뿐</b>입니다. 넘기면 나는 담당자가 되고, <b>스스로 되돌릴 수 없습니다.</b>')
+      +'<div style="margin-top:16px">'
+      +'<div class="cline on" style="margin:0"><div class="cbox"><svg class="ic"><use href="#i-check"/></svg></div>'
+      +'<div class="cl"><b>최*진</b> <span class="nick">유진쌤</span><div style="font-size:12.5px;color:var(--tx2);margin-top:4px">yujin@naver.com · 2026년 5월부터 · 일정 3개 등록</div></div></div>'
+      +'</div>'
+      +'<div style="margin-top:12px">'+note('담당자가 한 명뿐이라 선택지가 하나입니다. 다른 사람에게 넘기려면 <b>먼저 담당자로 승인</b>해 주세요.')+'</div>',
+    then:transferConfirm});
+}
+function transferConfirm(){
+  modal({title:'정말 넘기시겠어요?', danger:true, ok:'소유자 넘기기', cancel:'그만두기',
+    body:kv('넘겨받는 사람','최*진 (yujin@naver.com)')+kv('넘긴 뒤 내 권한','담당자',true)
+      +'<div style="margin-top:14px">'+note('넘긴 뒤 <b>최*진 님만</b> 다시 넘겨줄 수 있습니다. 내가 되찾을 수는 없어요.<br><br>소유자만 할 수 있는 일 — 센터 정보 수정, 담당자 승인·해임, 소유자 넘기기')+'</div>'
+      +'<div style="margin-top:16px">'+note('넘기면 <b>최*진 님에게 알림이 갑니다.</b> 미리 말씀을 나눠두세요.')+'</div>'});
+}
+function removeMember(name){
+  modal({title:name+' 님을 제외할까요?', danger:true, ok:'제외하기', cancel:'그대로 두기',
+    body:note('<b>바로 접근이 끊깁니다.</b> 일정과 신청자 명단을 더 이상 볼 수 없습니다.<br><br>그동안 등록한 일정과 회차는 <b>그대로 남습니다.</b> 삭제되지 않아요.')});
+}
+function leaveCenter(name, isOwner){
+  if(isOwner){
+    modal({title:'소유자는 바로 나갈 수 없어요', ok:'확인', cancel:false,
+      body:note('나가시려면 먼저 <b>다른 담당자에게 소유자를 넘겨야</b> 합니다. 소유자가 없으면 아무도 이 센터를 관리할 수 없게 됩니다.<br><br>담당자가 아무도 없다면 센터 삭제를 운영자에게 요청해 주세요.')});
+    return;
+  }
+  modal({title:name+'에서 나갈까요?', danger:true, ok:'나가기', cancel:'취소',
+    body:note('나가면 이 센터의 일정과 명단을 볼 수 없습니다.<br>다시 들어오려면 <b>관리자 등록 요청</b>을 다시 보내야 합니다.')});
+}
+function rvMenu(){
+  modal({title:'후기 관리', ok:'후기 수정', cancel:'닫기',
+    body:note('이 후기는 <b>내가 쓴 것</b>입니다. 오타를 고치거나 잘못 적은 정보를 바로잡을 수 있습니다.')
+      +'<div style="margin-top:16px"><button class="btn btn-d" onclick="closeModal();deleteReview()">후기 삭제</button></div>'
+      +'<div style="margin-top:14px">'+note('다른 사람의 후기라면 이 자리에 <b>신고하기</b>가 보입니다.')+'</div>',
+    then:function(){go('v-review')}});
+}
+function deleteReview(){
+  modal({title:'후기를 삭제할까요?', danger:true, ok:'삭제하기', cancel:'그대로 두기',
+    body:note('삭제한 후기는 되돌릴 수 없습니다. 참석 기록은 그대로 남습니다.'),
+    then:function(){go('v-reviews')}});
+}
+function reportReview(){
+  modal({title:'이 후기를 신고할까요?', danger:true, ok:'신고 보내기',
+    body:note('신고는 <b>봉사모아 운영자</b>에게 전달됩니다. 센터나 작성자에게는 알려지지 않습니다. 보통 1~2일 안에 확인합니다.<br><br>후기는 즉시 사라지지 않습니다. 욕설·허위·개인정보 노출일 때만 숨김 처리됩니다.')
+      +'<div style="margin-top:16px"><textarea placeholder="어떤 점이 문제인지 알려주세요.\n\n예) 저희 센터에 온 적이 없는 분입니다. / 다른 사람의 실명과 연락처가 적혀 있습니다."></textarea></div>'});
+}
+function reportUser(){
+  modal({title:'이 봉사자를 신고할까요?', danger:true, ok:'신고 보내기',
+    body:note('신고는 <b>봉사모아 운영자</b>에게 전달됩니다.')
+      +'<div style="margin-top:16px"><textarea placeholder="어떤 점이 문제인지 알려주세요."></textarea></div>'});
+}
+function handleReport(){
+  modal({title:'이 신고를 어떻게 할까요?', ok:'후기 유지', cancel:'닫기',
+    body:kv('후기','편한 옷 꼭 챙기세요')+kv('신고자','행복 유기견 보호소')+kv('사유','오지 않은 사람입니다',true)
+      +'<div style="margin-top:16px">'+note('<b>참석 확인 기록:</b> 이 봉사자는 7월 26일 회차에 참석 확인을 눌렀습니다. 신고 내용과 다릅니다.')+'</div>'
+      +'<div style="margin-top:16px"><button class="btn btn-d" onclick="closeModal()">후기 숨기기</button></div>'
+      +'<div style="margin-top:14px">'+note('단순히 부정적인 내용은 숨기지 않습니다. 욕설·허위·개인정보 노출만 숨김 대상입니다.')+'</div>'});
+}
+function approve(){
+  modal({title:'이 센터를 승인할까요?', ok:'승인하기', cancel:'그대로 두기',
+    body:kv('센터','행복유기견보호소')+kv('신청자','권*재',true)
+      +'<div style="margin-top:14px">'+note('<b style="color:var(--wn)">중복 의심 센터가 1건 있습니다.</b><br>같은 센터라면 승인 대신 반려하고, 기존 센터 소유자에게 관리자 등록 요청을 보내도록 안내하세요.')+'</div>'});
+}
+function reject(){
+  modal({title:'반려 사유', ok:'반려 보내기', danger:true, cancel:'그대로 두기',
+    body:'<textarea placeholder="신청자에게 전달될 내용을 적어주세요.\n\n예) 이미 등록된 ‘행복 유기견 보호소’와 동일한 센터로 보입니다. 기존 센터를 검색해 관리자 등록 요청을 보내주세요."></textarea>',
+    then:function(){go('s-list')}});
+}
+</script>
+</body>
+</html>
