@@ -329,6 +329,10 @@ export interface Database {
         Args: { p_nickname: string };
         Returns: boolean;
       };
+      is_email_registered: {
+        Args: { p_email: string };
+        Returns: boolean;
+      };
       apply_to_session: {
         Args: { p_session_id: string };
         Returns: Database["public"]["Tables"]["applications"]["Row"];
