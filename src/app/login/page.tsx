@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { copy } from "@/lib/copy";
+import { FormField, FormError, SubmitButton } from "@/components/ui/FormControls";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -27,7 +29,7 @@ export default function LoginPage() {
     setLoading(false);
 
     if (error) {
-      setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      setError(copy.errors.invalidLogin);
       return;
     }
 
@@ -38,44 +40,34 @@ export default function LoginPage() {
   return (
     <div className="flex flex-1 items-center justify-center px-6">
       <div className="w-full max-w-sm">
-        <h1 className="mb-8 text-xl font-semibold">로그인</h1>
+        <h1 className="mb-8 text-xl font-semibold">{copy.auth.loginTitle}</h1>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1 text-sm">
-            이메일
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-              placeholder="you@example.com"
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-sm">
-            비밀번호
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-            />
-          </label>
-          {error && <p className="text-sm text-red-600">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded bg-foreground px-4 py-2 text-background disabled:opacity-50"
-          >
-            {loading ? "로그인 중..." : "로그인"}
-          </button>
+          <FormField
+            label={copy.auth.emailLabel}
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={copy.auth.emailPlaceholder}
+          />
+          <FormField
+            label={copy.auth.passwordLabel}
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <FormError message={error} />
+          <SubmitButton loading={loading} loadingLabel={copy.auth.loggingIn}>
+            {copy.auth.loginButton}
+          </SubmitButton>
         </form>
 
         <p className="mt-6 text-sm text-zinc-600 dark:text-zinc-400">
-          계정이 없으신가요?{" "}
+          {copy.auth.noAccount}{" "}
           <Link href="/signup" className="underline">
-            회원가입
+            {copy.auth.signupTitle}
           </Link>
         </p>
       </div>

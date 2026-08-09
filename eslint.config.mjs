@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Next.js 앱 코드가 아닌 시안 검사용 스크립트
+    "docs/시안점검.js",
   ]),
 ]);
 
