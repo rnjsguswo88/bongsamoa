@@ -176,7 +176,6 @@ export default function SignupPage() {
                 type="text"
                 required
                 inputMode="numeric"
-                maxLength={6}
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 className="rounded border border-zinc-300 px-3 py-2 tracking-widest dark:border-zinc-700 dark:bg-zinc-900"
