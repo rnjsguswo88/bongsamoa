@@ -125,7 +125,11 @@ export default function SignupPage() {
 
     if (profileError) {
       if (profileError.code === "23505") {
-        setError("이미 사용 중인 닉네임입니다.");
+        if (profileError.message.includes("nickname")) {
+          setError("이미 사용 중인 닉네임입니다.");
+        } else {
+          setError("이미 가입된 이메일입니다. 로그인해주세요.");
+        }
       } else {
         setError(profileError.message);
       }
