@@ -413,6 +413,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--pri);box
 <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
 <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
 <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4.2L19 9.2 14.8 5 4 15.8z"/><path d="M13.6 6.2l4.2 4.2"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></symbol>
 <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 11a4 4 0 0 1 4-4h12"/><path d="M17 4l3 3-3 3"/><path d="M20 13a4 4 0 0 1-4 4H4"/><path d="M7 14l-3 3 3 3"/></symbol>
 <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="8" rx="1.8"/><rect x="13.5" y="3" width="7.5" height="5" rx="1.8"/><rect x="13.5" y="10.5" width="7.5" height="10.5" rx="1.8"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.8"/></symbol>
 <symbol id="i-login" viewBox="0 0 24 24"><path d="M14 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M14 12H4M8 8l-4 4 4 4"/></symbol>
@@ -1436,6 +1437,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--pri);box
     </div>
     <div class="field"><label>시간<em>*</em></label>
       <div class="two"><input type="time" value="10:00"><input type="time" value="17:00"></div>
+      <div class="hint">신청자가 생기면 그 회차의 시간은 수정할 수 없어요. 바꾸려면 취소하고 새로 만들어야 합니다.</div>
     </div>
     <div class="field"><label>회차당 정원<em>*</em></label><input type="number" value="8"></div>
     <div class="field"><label>집합 장소<em>*</em></label><input placeholder="센터 정문 앞"></div>
@@ -1458,8 +1460,10 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--pri);box
 <!-- ============ A6 회차 목록 ============ -->
 <div class="scr" id="c-sessions">
   <div class="hd plain"><svg class="ic" onclick="goBack('c-dash')"><use href="#i-back"/></svg><h1>회차 목록<span class="sub">2026년 상반기 정기봉사 · 14개</span></h1></div>
-  <div class="seg">
-    <div onclick="seg(this)">1월</div><div class="on" onclick="seg(this)">2월</div><div onclick="seg(this)">3월</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:14px 0;border-bottom:1px solid var(--line)">
+    <svg class="ic" style="cursor:pointer" onclick="monthNav(-1)"><use href="#i-back"/></svg>
+    <span id="monthLabel" style="font-size:15px;font-weight:600;min-width:92px;text-align:center">2026년 2월</span>
+    <svg class="ic" style="cursor:pointer;transform:scaleX(-1)" onclick="monthNav(1)"><use href="#i-back"/></svg>
   </div>
   <div class="body">
     <div class="ban g" style="margin-top:16px">
@@ -1496,7 +1500,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--pri);box
 
 <!-- ============ A7 회차 명단 ============ -->
 <div class="scr" id="c-session">
-  <div class="hd plain"><svg class="ic" onclick="goBack('c-dash')"><use href="#i-back"/></svg><h1>8월 15일 (토)<span class="sub">10:00 – 13:00 · 센터 정문 앞</span></h1><span class="act" onclick="addManual()">+ 직접 추가</span></div>
+  <div class="hd plain"><svg class="ic" onclick="goBack('c-dash')"><use href="#i-back"/></svg><h1>8월 15일 (토)<span class="sub">10:00 – 13:00 · 센터 정문 앞 <svg class="ic" style="width:14px;height:14px;vertical-align:-2px;cursor:pointer" onclick="timeLockInfo()"><use href="#i-lock"/></svg></span></h1><span class="act" onclick="addManual()">+ 직접 추가</span></div>
   <div class="body">
     <div class="stat" style="margin-top:16px">
       <div><div class="n">6 / 8</div><div class="l">신청</div></div>
@@ -1510,10 +1514,10 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--pri);box
 
     <div class="sec">신청자 6명<span class="more" onclick="addManual()">+ 직접 추가</span></div>
     <div class="group">
-      <div class="row" onclick="applicant('김*연','뭉치엄마','self')">
+      <div class="row" onclick="applicant('김*연','뭉치엄마','self',2,'010-1234-5678')">
         <div class="pfp s44">김*</div>
         <div class="g"><div class="t">김*연 <span class="nick">뭉치엄마</span></div><div class="s">이 센터 12번째 참여</div></div>
-        <svg class="ic ch"><use href="#i-right"/></svg>
+        <span class="badge b-wn">2명</span>
       </div>
       <div class="row" onclick="applicant('박*호','준호','self')">
         <div class="pfp s44">박*</div>
@@ -2201,6 +2205,13 @@ function resetFilter(){
   applyFilter();
 }
 function toggleDev(){ document.getElementById('devpanel').classList.toggle('on'); }
+/* 회차 목록의 월 전환 — 예전엔 1월/2월/3월 탭이었는데, 1년짜리 일정이면 탭이 12개가 되어 화살표 방식으로 바꿈 */
+var monthList=['2026년 1월','2026년 2월','2026년 3월'];
+var monthIdx=1;
+function monthNav(delta){
+  monthIdx=Math.max(0,Math.min(monthList.length-1,monthIdx+delta));
+  document.getElementById('monthLabel').textContent=monthList[monthIdx];
+}
 function toggleDay(el){el.classList.toggle('on')}
 function chip(el){el.parentNode.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on')});el.classList.add('on')}
 function seg(el){el.parentNode.querySelectorAll('div').forEach(function(d){d.classList.remove('on')});el.classList.add('on')}
@@ -2287,20 +2298,26 @@ function addManual(){
 }
 /* 신청자 상세 — 본인 신청과 직접 추가를 같은 형식으로 보여줍니다.
    센터가 «누구인지 · 어떻게 들어왔는지» 를 한 화면에서 판단하고, 필요하면 뺍니다. */
-function applicant(name, nick, how){
+function applicant(name, nick, how, party, phone){
   var manual = (how === 'manual');
+  party = party || 1;
   var body =
       kv('이름', name + '  <span class="nick">실명을 가려서 표시</span>')
     + kv('닉네임', nick ? nick : '<span style="color:var(--mu);font-weight:400">없음</span>')
+    + kv('인원', party > 1 ? '본인 포함 ' + party + '명' : '1명')
     + kv('신청 방법', manual ? '<span style="color:var(--wn)">센터가 직접 추가</span>' : '본인이 신청')
     + kv('신청일', manual ? '8월 9일 · 권*재 님이 추가' : '8월 8일 오후 2:14')
     + kv('우리 센터 참여', manual ? '기록 없음' : '12번째')
+    + (phone ? kv('대표 연락처', '<a href="tel:'+phone.replace(/-/g,'')+'" style="color:var(--ok);font-weight:600;text-decoration:none">'+phone+'</a>') : '')
     + kv('메모', manual
         ? '최*진 님 지인 · 전화로 신청'
         : '<span style="color:var(--mu);font-weight:400">없음</span>', true);
 
   if(manual){
     body += '<div style="margin-top:14px">' + note('계정이 없는 분입니다. <b>참석 확인과 후기</b>는 쓸 수 없고, 정원에만 함께 잡힙니다.') + '</div>';
+  }else if(phone){
+    /* 2명 이상 신청자만 연락처를 받습니다. 봉사 종료 30일 뒤 자동 삭제됩니다. */
+    body += '<div style="margin-top:14px">' + note('2명 이상 신청이라 <b>확인용 연락처</b>를 받아뒀습니다. 봉사가 끝나고 30일 뒤 자동으로 지워집니다.') + '</div>';
   }else{
     body += '<div style="margin-top:14px">' + note('전화번호는 저장하지 않습니다. 연락이 필요하면 <b>현장에서</b> 직접 여쭤보세요.') + '</div>';
   }
@@ -2553,14 +2570,39 @@ function modal(o){
   document.getElementById('modal').style.display='flex';
 }
 function closeModal(){document.getElementById('modal').style.display='none'}
+/* 동의 체크박스가 하나(안전 안내)일 수도, 둘(연락처 동의 + 안전 안내)일 수도 있어서
+   클릭된 것 하나만 보지 않고 그 팝업 안의 .agree 전부가 켜졌는지로 판정합니다. */
 function agree(el){
   el.classList.toggle('on');
-  document.getElementById('m-ok').disabled = !el.classList.contains('on');
+  var all=document.querySelectorAll('#m-body .agree');
+  var allOn=true;
+  all.forEach(function(a){ if(!a.classList.contains('on')) allOn=false; });
+  document.getElementById('m-ok').disabled = !allOn;
 }
 
 /* ---- 화면별 팝업 ---- */
+/* 신청 흐름을 2단계로 나눴습니다 — 1단계에서 인원만 먼저 정하고,
+   2단계에서 그 인원수에 맞는 완성된 폼을 보여줍니다. 폼 중간에 연락처 칸이
+   갑자기 나타나면 거부감이 들 수 있어서, 처음부터 완성된 모양으로 보여줍니다. */
 function apply(d,t){
-  if(needLogin('apply', function(){apply(d,t,left)}, d+' '+t)) return;
+  if(needLogin('apply', function(){apply(d,t)}, d+' '+t)) return;
+  modal({title:'몇 분이 함께 하시나요?', ok:'다음', cancel:'닫기',
+    body:'<div style="display:flex;align-items:center;justify-content:center;gap:24px;padding:20px 0">'
+      +'<button class="btn btn-o" style="width:44px;height:44px;padding:0;border-radius:50%" onclick="event.stopPropagation();partyStep(-1)">−</button>'
+      +'<span id="partyNum" style="font-size:22px;font-weight:700;min-width:24px;text-align:center">1</span>'
+      +'<button class="btn btn-o" style="width:44px;height:44px;padding:0;border-radius:50%" onclick="event.stopPropagation();partyStep(1)">+</button>'
+      +'</div>',
+    then:function(){
+      var n=parseInt(document.getElementById('partyNum').textContent,10);
+      applyDetail(d,t,n);
+    }});
+}
+function partyStep(delta){
+  var el=document.getElementById('partyNum');
+  var v=Math.max(1,parseInt(el.textContent,10)+delta);
+  el.textContent=v;
+}
+function applyDetail(d,t,n){
   var conds='<div style="margin:18px 0 10px;font-size:14px;font-weight:600">신청 전 확인해 주세요</div>'
     +'<div class="conds" style="padding:0">'
     +'<span class="cond imp"><svg class="ic"><use href="#i-alert"/></svg>만 14세 이상</span>'
@@ -2578,8 +2620,19 @@ function apply(d,t){
     +'</div></div></div>'
     +'<div class="agree" onclick="agree(this)"><div class="cbox"><svg class="ic"><use href="#i-check"/></svg></div>'
     +'<div class="cl">위 내용을 확인했고, 저에게 해당됩니다</div></div>';
+  var groupBlock='';
+  if(n>=2){
+    groupBlock='<div style="margin:16px 0 0">'+note('센터 담당자가 확인 전화를 드릴 수 있어요. 연락이 닿지 않으면 신청이 취소될 수 있습니다.')+'</div>'
+      +'<div class="field" style="padding:0;margin-top:10px"><label>대표 연락처<em>*</em></label><input placeholder="010-0000-0000"></div>'
+      +'<div style="margin-top:10px;background:var(--page);border-radius:12px;padding:12px 14px;font-size:12.5px;line-height:1.9;color:var(--tx2)">'
+      +'<b style="color:var(--tx)">수집 항목</b> 전화번호 &nbsp;·&nbsp; <b style="color:var(--tx)">목적</b> 확인 연락<br>'
+      +'<b style="color:var(--tx)">보유 기간</b> 종료 후 30일, 이후 자동 삭제 &nbsp;·&nbsp; <b style="color:var(--tx)">거부 시</b> 혼자 신청만 가능'
+      +'</div>'
+      +'<div class="agree" onclick="agree(this)" style="margin-top:10px"><div class="cbox"><svg class="ic"><use href="#i-check"/></svg></div>'
+      +'<div class="cl">전화번호 수집·이용에 동의합니다</div></div>';
+  }
   modal({title:'이 날짜로 신청할까요?',
-    body:kv('센터','행복 유기견 보호소')+kv('날짜',d)+kv('시간',t,true)+conds,
+    body:kv('센터','행복 유기견 보호소')+kv('날짜',d)+kv('시간',t)+kv('인원',n+'명',true)+groupBlock+conds,
     ok:'신청하기', needAgree:true, then:function(){go('v-done')}});
 }
 function centerInfo(){
@@ -2650,22 +2703,28 @@ function attendDone(){
       +'<div style="margin-top:12px;font-size:12.5px;color:var(--mu);line-height:1.6">지금 안 쓰셔도 «내 봉사»에서 언제든 남길 수 있습니다.</div>',
     then:function(){go('v-review')}});
 }
+/* 취소 = 신청자 전원 자동 취소(기존 휴무 처리 로직 그대로).
+   "자동으로 연락이 안 간다"는 문구는 뺐습니다 — 알림은 나중에(모바일) 붙일 예정이라
+   지금 넣어봐야 매번 걸리는 소음이 됩니다. 취소해도 여기서 자동으로 다른 화면으로 안 넘어갑니다. */
 function closeSession(){
-  modal({title:'이 회차를 휴무로 바꿀까요?', danger:true, ok:'휴무로 바꾸기', cancel:'돌아가기',
-    body:kv('회차','8월 29일 (토) 10:00–17:00')+kv('신청한 사람','6명',true)
-      +'<div style="margin-top:14px">'+note('<b>신청한 6명의 신청이 모두 취소됩니다.</b> 봉사자 화면에는 «센터 사정으로 취소됨» 으로 표시됩니다.')+'</div>'
-      +'<div style="margin-top:10px;background:#FDF3E3;border-radius:12px;padding:14px 15px">'
-      +'<div style="font-size:13.5px;line-height:1.7;color:#8A5A16;font-weight:600">6명에게 자동으로 연락이 가지 않습니다</div>'
-      +'<div style="font-size:13px;line-height:1.7;color:#8A5A16;margin-top:3px">봉사자 화면에는 «센터 사정으로 취소됨» 과 <b>휴무 사유</b>가 뜨지만, 앱을 열어야 봅니다. 모르고 오시는 분이 없도록 아는 연락처로 한 번 알려주세요.</div>'
-      +'</div>'
-      +'<div style="margin-top:16px"><label style="font-size:14px;font-weight:600;display:block;margin-bottom:8px">휴무 사유 <span style="color:var(--mu);font-weight:400">· 봉사자에게 그대로 보입니다</span></label><input placeholder="시설 점검"></div>'
-      +'<div style="margin-top:12px">'+note('휴무를 되돌려도 <b>취소된 신청은 살아나지 않습니다.</b> 이미 다른 일정을 잡은 분이 있기 때문입니다. 빈 자리로 다시 열립니다.')+'</div>'});
+  modal({title:'8월 29일 (토) 10:00–17:00', danger:true, ok:'취소하기', cancel:'돌아가기',
+    body:'<div style="font-size:13px;color:var(--tx2);margin-bottom:10px">이 회차를 취소할까요?</div>'
+      +kv('신청한 사람','6명',true)
+      +'<div style="margin-top:14px">'+note('<b>신청자 6명의 신청도 함께 취소되고, 되돌릴 수 없습니다.</b>')+'</div>'
+      +'<div style="margin-top:16px"><label style="font-size:14px;font-weight:600;display:block;margin-bottom:8px">취소 사유 <span style="color:var(--mu);font-weight:400">· 봉사자에게 그대로 보입니다</span></label><input placeholder="시설 점검"></div>'});
 }
+/* 시간 옆 자물쇠 — 평소엔 아이콘만 보이고, 탭해야만 이유가 뜹니다. 상시 노출 문구를 없앤 것입니다. */
+function timeLockInfo(){
+  modal({title:'시간을 수정할 수 없어요', ok:'확인', cancel:false,
+    body:note('신청자가 있어 시간을 수정할 수 없어요.<br>바꾸려면 회차를 취소하고 새로 만드세요.')});
+}
+/* 정원은 신청자 수보다 적게 줄여도 됩니다 — 이미 신청한 사람은 그대로 유지되고,
+   그 회차가 "마감"으로 보일 뿐입니다. 시간은 이 팝업에서 다루지 않습니다(별도 잠금, i-lock 참고). */
 function changeCap(){
-  modal({title:'정원을 바꿀까요?', ok:'변경하기', cancel:'그대로 두기',
-    body:kv('현재 정원','8명')+kv('신청한 사람','6명',true)
-      +'<div style="margin-top:16px"><input type="number" value="8"></div>'
-      +'<div style="margin-top:14px">'+note('이미 신청한 <b>6명보다 적게는 줄일 수 없습니다.</b> 늘리면 그 자리는 바로 열립니다.')+'</div>'});
+  modal({title:'8월 15일 (토) 10:00–13:00', ok:'저장', cancel:'취소',
+    body:'<div style="font-size:13px;color:var(--tx2);margin-bottom:10px">정원 수정</div>'
+      +kv('현재 정원','8명')+kv('신청한 사람','6명',true)
+      +'<div style="margin-top:16px"><input type="number" value="8"></div>'});
 }
 function howToJoin(){
   modal({title:'이 내용을 보내드릴게요', ok:'카카오톡으로 보내기', cancel:'닫기',
