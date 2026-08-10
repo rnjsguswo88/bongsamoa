@@ -414,6 +414,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--pri);box
 <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
 <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4.2L19 9.2 14.8 5 4 15.8z"/><path d="M13.6 6.2l4.2 4.2"/></symbol>
 <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a12 12 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4.5 5.7a2 2 0 0 1 2-2.2z"/></symbol>
 <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 11a4 4 0 0 1 4-4h12"/><path d="M17 4l3 3-3 3"/><path d="M20 13a4 4 0 0 1-4 4H4"/><path d="M7 14l-3 3 3 3"/></symbol>
 <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="8" rx="1.8"/><rect x="13.5" y="3" width="7.5" height="5" rx="1.8"/><rect x="13.5" y="10.5" width="7.5" height="10.5" rx="1.8"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.8"/></symbol>
 <symbol id="i-login" viewBox="0 0 24 24"><path d="M14 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M14 12H4M8 8l-4 4 4 4"/></symbol>
@@ -855,7 +856,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--pri);box
     <div class="center">
       <div class="circle"><svg class="ic"><use href="#i-check"/></svg></div>
       <div style="font-size:21px;font-weight:700;letter-spacing:-.03em">신청이 확정됐어요</div>
-      <div style="font-size:15px;color:var(--tx2);margin-top:12px;line-height:1.7">8월 15일 (토) 10:00 – 13:00<br>행복 유기견 보호소 · 센터 정문 앞</div>
+      <div style="font-size:15px;color:var(--tx2);margin-top:12px;line-height:1.7">8월 15일 (토) 10:00 – 13:00<br>행복 유기견 보호소 · 센터 정문 앞<br><b style="color:var(--tx)">본인 포함 2명</b></div>
     </div>
     <div class="ban g" style="margin-top:0">
       <div class="l">잊지 마세요</div>
@@ -1081,7 +1082,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--pri);box
       <div class="group" style="margin-top:8px">
         <div class="row" onclick="go('v-up')">
           <div class="thumb"><svg class="ic"><use href="#i-paw"/></svg></div>
-          <div class="g"><div class="t">8월 15일 (토) 10:00</div><div class="s">행복 유기견 보호소 · 센터 정문 앞</div></div>
+          <div class="g"><div class="t">8월 15일 (토) 10:00 <span class="badge b-wn" style="font-size:11px;padding:2px 7px;margin-left:4px"><svg class="ic" style="width:11px;height:11px;vertical-align:-1px"><use href="#i-users"/></svg> 2명</span></div><div class="s">행복 유기견 보호소 · 센터 정문 앞</div></div>
           <span class="badge b-ok">D-7</span>
         </div>
         <div class="row" onclick="go('v-up')">
@@ -1148,8 +1149,10 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--pri);box
       <div class="kv"><span>센터</span><span>행복 유기견 보호소</span></div>
       <div class="kv"><span>장소</span><span>센터 정문 앞</span></div>
       <div class="kv"><span>센터 연락처</span><span><a href="tel:0212345678" style="color:var(--ok);font-weight:600;text-decoration:none">02-1234-5678</a></span></div>
-      <div class="kv" style="border:none"><span>현재 신청 인원</span><span>6 / 8명</span></div>
+      <div class="kv"><span>신청 인원</span><span>본인 포함 2명 <span class="more" style="margin-left:6px" onclick="changeParty()">변경</span></span></div>
+      <div class="kv" style="border:none"><span>대표 연락처</span><span>010-1234-5678</span></div>
     </div>
+    <div class="foot" style="padding-top:10px">2명 이상 신청이라 센터가 확인 전화를 드릴 수 있어요.</div>
 
     <div class="sec">가기 전에 확인하세요</div>
     <div class="conds">
@@ -1500,24 +1503,30 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--pri);box
 
 <!-- ============ A7 회차 명단 ============ -->
 <div class="scr" id="c-session">
-  <div class="hd plain"><svg class="ic" onclick="goBack('c-dash')"><use href="#i-back"/></svg><h1>8월 15일 (토)<span class="sub">10:00 – 13:00 · 센터 정문 앞 <svg class="ic" style="width:14px;height:14px;vertical-align:-2px;cursor:pointer" onclick="timeLockInfo()"><use href="#i-lock"/></svg></span></h1><span class="act" onclick="addManual()">+ 직접 추가</span></div>
+  <div class="hd plain"><svg class="ic" onclick="goBack('c-dash')"><use href="#i-back"/></svg><h1>8월 15일 (토)<span class="sub">10:00 – 13:00 · 센터 정문 앞 <svg class="ic" style="width:14px;height:14px;vertical-align:-2px;cursor:pointer" onclick="timeLockInfo()"><use href="#i-lock"/></svg></span></h1></div>
   <div class="body">
-    <div class="stat" style="margin-top:16px">
-      <div><div class="n">6 / 8</div><div class="l">신청</div></div>
-      <div><div class="n">2</div><div class="l">남은 자리</div></div>
-      <div><div class="n">D-7</div><div class="l">봉사까지</div></div>
-    </div>
-    <div class="two" style="padding:12px 16px 0">
-      <button class="btn btn-o" style="font-size:14px;padding:12px" onclick="changeCap()">정원 바꾸기</button>
-      <button class="btn btn-d" style="font-size:14px;padding:12px" onclick="closeSession()">이 회차 휴무</button>
+    <div style="margin:16px 16px 0;background:var(--card);border:1px solid var(--bd);border-radius:var(--r-c);padding:18px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <span style="font-size:30px;font-weight:700;letter-spacing:-.03em">6</span>
+        <span style="font-size:17px;color:var(--tx2);font-weight:600">/ 8명</span>
+        <span class="badge b-ok" style="margin-left:auto">D-7</span>
+      </div>
+      <div style="height:6px;background:var(--page);border-radius:99px;margin-top:12px;overflow:hidden">
+        <div style="width:75%;height:100%;background:var(--pri);border-radius:99px"></div>
+      </div>
+      <div class="two" style="padding:0;margin-top:16px">
+        <button class="btn btn-o" style="font-size:14px;padding:11px" onclick="changeCap()">정원 바꾸기</button>
+        <button class="btn btn-d" style="font-size:14px;padding:11px" onclick="closeSession()">회차 취소</button>
+      </div>
     </div>
 
-    <div class="sec">신청자 6명<span class="more" onclick="addManual()">+ 직접 추가</span></div>
+    <div class="sec">신청자 6명</div>
     <div class="group">
       <div class="row" onclick="applicant('김*연','뭉치엄마','self',2,'010-1234-5678')">
         <div class="pfp s44">김*</div>
-        <div class="g"><div class="t">김*연 <span class="nick">뭉치엄마</span></div><div class="s">이 센터 12번째 참여</div></div>
-        <span class="badge b-wn">2명</span>
+        <div class="g"><div class="t">김*연 <span class="nick">뭉치엄마</span></div>
+          <div class="s">이 센터 12번째 참여 · <span style="color:var(--ok);font-weight:600"><svg class="ic" style="width:12px;height:12px;vertical-align:-1px"><use href="#i-phone"/></svg> 010-1234-5678</span></div></div>
+        <span class="badge b-wn"><svg class="ic" style="width:12px;height:12px;vertical-align:-1px"><use href="#i-users"/></svg> 2명</span>
       </div>
       <div class="row" onclick="applicant('박*호','준호','self')">
         <div class="pfp s44">박*</div>
@@ -2289,12 +2298,47 @@ function resetPw(){
    계정 없이 이름만으로 자리를 잡아둡니다. applications.is_manual = true */
 function addManual(){
   modal({title:'신청자 직접 추가', ok:'명단에 추가', cancel:'닫기',
-    body:kv('회차','8월 15일 (토) 10:00–13:00')+kv('남은 자리','2명',true)
+    body:kv('회차','8월 15일 (토) 10:00–13:00',true)
       +'<div class="field" style="padding:0;margin:16px 0 0"><label>이름<em>*</em></label><input placeholder="예) 한아름">'
       +'<div class="hint">명단에는 <b>한*름</b> 으로 표시됩니다.</div></div>'
-      +'<div class="field" style="padding:0;margin:14px 0 0"><label>메모</label><input placeholder="예) 최*진 님 지인 · 전화로 신청">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:18px">'
+      +'<label style="font-size:14px;font-weight:600">인원 <span style="color:var(--mu);font-weight:400">· 본인 포함</span></label>'
+      +'<div style="display:flex;align-items:center;gap:16px">'
+      +'<button class="btn btn-o" style="width:44px;height:44px;padding:0;border-radius:50%" onclick="manualStep(-1)">−</button>'
+      +'<span id="manualNum" style="font-size:18px;font-weight:700;min-width:22px;text-align:center">1</span>'
+      +'<button class="btn btn-o" style="width:44px;height:44px;padding:0;border-radius:50%" onclick="manualStep(1)">+</button>'
+      +'</div></div>'
+      +'<div class="field" style="padding:0;margin:18px 0 0"><label>메모</label><input placeholder="예) 최*진 님 지인 · 전화로 신청">'
       +'<div class="hint">누가 왜 추가했는지 나중에 알아볼 수 있게 적어두세요.</div></div>'
       +'<div style="margin-top:14px">'+note('계정 없이 자리만 잡아둡니다. 참석 확인과 후기는 쓸 수 없고, <b>정원에는 함께 잡힙니다.</b>')+'</div>'});
+}
+function manualStep(delta){
+  var el=document.getElementById('manualNum');
+  el.textContent=Math.max(1,parseInt(el.textContent,10)+delta);
+}
+/* 봉사자가 신청 후 인원을 바꿉니다. 신청 때와 같은 2단계 구조를 재사용합니다.
+   2명 미만으로 줄이면 저장해둔 대표 연락처는 자동으로 지워집니다. */
+function changeParty(){
+  modal({title:'몇 분이 함께 하시나요?', ok:'다음', cancel:'닫기',
+    body:'<div style="display:flex;align-items:center;justify-content:center;gap:24px;padding:20px 0">'
+      +'<button class="btn btn-o" style="width:44px;height:44px;padding:0;border-radius:50%" onclick="partyStep(-1)">−</button>'
+      +'<span id="partyNum" style="font-size:22px;font-weight:700;min-width:24px;text-align:center">2</span>'
+      +'<button class="btn btn-o" style="width:44px;height:44px;padding:0;border-radius:50%" onclick="partyStep(1)">+</button>'
+      +'</div>'
+      +note('정원을 넘으면 늘릴 수 없어요.'),
+    then:function(){
+      var n=parseInt(document.getElementById('partyNum').textContent,10);
+      changePartyConfirm(n);
+    }});
+}
+function changePartyConfirm(n){
+  var body=kv('봉사','8월 15일 (토) 10:00 – 13:00')+kv('인원',n+'명',true);
+  if(n>=2){
+    body+='<div class="field" style="padding:0;margin:16px 0 0"><label>대표 연락처<em>*</em></label><input value="010-1234-5678"></div>';
+  }else{
+    body+='<div style="margin-top:16px">'+note('혼자 신청으로 바뀌면서 <b>저장된 연락처가 지워집니다.</b>')+'</div>';
+  }
+  modal({title:'인원을 바꿀까요?', ok:'변경하기', cancel:'그대로 두기', body:body});
 }
 /* 신청자 상세 — 본인 신청과 직접 추가를 같은 형식으로 보여줍니다.
    센터가 «누구인지 · 어떻게 들어왔는지» 를 한 화면에서 판단하고, 필요하면 뺍니다. */
@@ -2329,13 +2373,13 @@ function applicant(name, nick, how, party, phone){
 /* 명단에서 제외 — 되돌릴 수 없으므로 한 번 더 묻습니다. */
 function dropApplicant(name, manual){
   modal({title:name+' 님을 명단에서 뺄까요?', danger:true, ok:'제외하기', cancel:'그대로 두기',
-    body:kv('회차','8월 15일 (토) 10:00–13:00')+kv('제외 후 남은 자리','3명',true)
+    body:kv('회차','8월 15일 (토) 10:00–13:00',true)
       +'<div style="margin-top:14px">'
       + note(manual
           ? '직접 추가한 분이라 <b>기록이 남지 않고 지워집니다.</b>'
-          : '<b>봉사자 화면에서도 «센터 사정으로 취소됨» 으로 바뀝니다.</b> 다만 알림이 없어 앱을 열어야 봅니다. 모르고 오시지 않도록 미리 알려주세요.')
+          : '<b>봉사자 화면에서도 «센터 사정으로 취소됨» 으로 바뀝니다.</b>')
       +'</div>'
-      +'<div style="margin-top:10px">'+note('자리가 하나 열리고 다른 분이 바로 신청할 수 있습니다. 되돌리려면 다시 추가해야 합니다.')+'</div>'});
+      +'<div style="margin-top:10px">'+note('되돌리려면 다시 추가해야 합니다.')+'</div>'});
 }
 /* ---- 회원가입 · 이메일 인증을 입력 단계에서 ----
    예전에는 가입 버튼을 누른 «뒤에» 인증 메일을 보냈습니다. 그러면
